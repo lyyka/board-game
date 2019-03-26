@@ -1,0 +1,7 @@
+*{
+    word-wrap: break-word;
+}
+html, body{
+    padding: 50px 10px;
+    font-family: 'Montserrat', sans-serif;
+}
