@@ -1,13 +1,15 @@
 class Game{
 
-    constructor(player1, player2) {
-        this.board = new Board(30, 8);
-        this.board.init();
+    constructor() {
+        this.log = new Logger();
+        this.board = new Board(30, 8, this);
+    }
 
-        this.player1 = player1;
-        this.player2 = player2;
+    start(){
+        this.board.drawBoard();
 
         this.turn = 1;
+        this.log.logTurn(this);
     }
     
     changeTurn(){
@@ -17,6 +19,7 @@ class Game{
         else{
             this.turn = 1;
         }
+        this.log.logTurn(this);
     }
 
 }
