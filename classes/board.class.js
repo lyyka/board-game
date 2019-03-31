@@ -2,6 +2,7 @@ class Board{
     constructor(fieldSize, fieldsNumber, gameInstance){
         // game this board belongs to
         this.game = gameInstance;
+        this.fields = [];
 
         // number of fields and size of each field
         this.fieldsNumber = fieldsNumber;
@@ -16,17 +17,103 @@ class Board{
         this.boardCanvasContext = this.boardCanvasEl.getContext('2d');
         this.boardCanvasContext.lineWidth = 2;
 
-        // bind this
+        // load images for power ups
+        this.images = {
+            hp_potion: document.getElementById('hp_potion'),
+            attack_power: document.getElementById('attack_power'),
+        }
+
+        // bind this to functions
         this.onClick = this.onClick.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
 
         // on canvas click, get clicked square
         this.boardCanvasEl.addEventListener('click', this.onClick);
-        this.boardCanvasEl.addEventListener('mouseover', this.onMouseOver);
+        document.body.addEventListener('keydown', this.onKeyDown);
+    }
+
+    onKeyDown(e){
+        var keyCode = e.keyCode;
+        if(this.game.turn == 1){
+            switch (keyCode) {
+                case 68: //d
+                    this.movePlayer(
+                        {
+                            x: this.getActivePlayer().position.x + 1,
+                            y: this.getActivePlayer().position.y
+                        }
+                    );
+                    break;
+                case 83: //s
+                    this.movePlayer(
+                        {
+                            x: this.getActivePlayer().position.x,
+                            y: this.getActivePlayer().position.y + 1
+                        }
+                    );
+                    break;
+                case 65: //a
+                    this.movePlayer(
+                        {
+                            x: this.getActivePlayer().position.x - 1,
+                            y: this.getActivePlayer().position.y
+                        }
+                    );
+                    break;
+                case 87: //w
+                    this.movePlayer(
+                        {
+                            x: this.getActivePlayer().position.x,
+                            y: this.getActivePlayer().position.y - 1
+                        }
+                    );
+                    break;
+            }
+        }
+        else if(this.game.turn == 2){
+            switch (keyCode) {
+                case 39: //d
+                    this.movePlayer(
+                        {
+                            x: this.getActivePlayer().position.x + 1,
+                            y: this.getActivePlayer().position.y
+                        }
+                    );
+                    break;
+                case 40: //s
+                    this.movePlayer(
+                        {
+                            x: this.getActivePlayer().position.x,
+                            y: this.getActivePlayer().position.y + 1
+                        }
+                    );
+                    break;
+                case 37: //a
+                    this.movePlayer(
+                        {
+                            x: this.getActivePlayer().position.x - 1,
+                            y: this.getActivePlayer().position.y
+                        }
+                    );
+                    break;
+                case 38: //w
+                    this.movePlayer(
+                        {
+                            x: this.getActivePlayer().position.x,
+                            y: this.getActivePlayer().position.y - 1
+                        }
+                    );
+                    break;
+            }
+        }
     }
 
     onClick(e){
         const pos = this.getPositionSquare(e);
+        this.movePlayer(pos);
+    }
 
+    movePlayer(pos){
         const x = pos.x;
         const y = pos.y;
 
@@ -34,18 +121,14 @@ class Board{
         let move_distance = 100;
 
         // set player based on turn
-        if (this.game.turn == 1) {
-            player = this.game.player1;
-        }
-        else if (this.game.turn == 2) {
-            player = this.game.player2;
-        }
+        player = this.getActivePlayer();
+
         // calc players move distance
-        move_distance = Math.abs(Math.pow(player.position.x - x + 1, 2) + Math.pow(player.position.y - y + 1, 2));
-        if(player != undefined){
-            if (move_distance > 2 || move_distance == 0) {
+        move_distance = Math.abs(Math.pow(player.position.x - x, 2) + Math.pow(player.position.y - y, 2));
+        if (player != undefined) {
+            if (move_distance > 2 || move_distance == 0 || x > this.fieldsNumber || y > this.fieldsNumber || x <= 0 || y <= 0) {
                 // move distance greater than 2, or on the same spot
-                alert('You can only move to fields around you');
+                alert('You can only move to fields around you and in board');
             }
             else {
                 // player moved
@@ -54,7 +137,18 @@ class Board{
                 this.clearCurrentPlayer();
 
                 // update players position
-                player.updatePlayerPosition(x - 1, y - 1);
+                player.updatePlayerPosition(x, y);
+                if (this.fields[x - 1][y - 1].power_up != undefined) {
+                    const power_up = this.fields[x - 1][y - 1].power_up;
+                    this.fields[x - 1][y - 1].power_up = undefined;
+
+                    if (power_up == 'hp_potion') {
+                        player.hp += 10;
+                    }
+                    if (power_up == 'attack_power') {
+                        player.attack_power += 10;
+                    }
+                }
 
                 // change turns in game
                 this.game.changeTurn();
@@ -63,6 +157,31 @@ class Board{
                 this.drawPlayer(player);
             }
         }
+    }
+
+    getActivePlayer(){
+        let player = undefined;
+        if (this.game.turn == 1) {
+            player = this.game.player1;
+        }
+        else if (this.game.turn == 2) {
+            player = this.game.player2;
+        }
+        return player;
+    }
+
+    countPowerUps(){
+        let number = 0;
+        for(var i = 0; i < this.fields.length; i++){
+            let row = this.fields[i];
+            for(var y = 0; y < row.length; y++){
+                const field = row[y];
+                if(field.power_up != undefined){
+                    number++;
+                }
+            }
+        }
+        return number;
     }
 
     getPositionSquare(e){
@@ -79,37 +198,63 @@ class Board{
     }
 
     drawBoard() {
+        // black borders
         this.boardCanvasContext.strokeStyle = 'black';
 
         for (var i = 0; i < this.fieldsNumber; i++) {
+            this.fields[i] = [];
             for (var y = 0; y < this.fieldsNumber; y++) {
+                // add new field
+                this.fields[i][y] = new Field(i, y, this);
+
+                // draw field
                 this.boardCanvasContext.rect(
                     i * this.fieldSize+this.boardCanvasContext.lineWidth,
                     y * this.fieldSize+this.boardCanvasContext.lineWidth,
                     this.fieldSize,
-                    this.fieldSize);
+                    this.fieldSize
+                );
             }
         }
 
         this.boardCanvasContext.stroke();
     }
 
-    clearCurrentPlayer(){
-        const p1 = this.game.player1.position;
-        const p2 = this.game.player2.position;
+    drawPowerUp(x, y, power_up){
+        let image = undefined;
+        if (power_up == 'hp_potion') {
+            image = this.images.hp_potion;
+        }
+        if (power_up == 'attack_power') {
+            image = this.images.attack_power;
+        }
 
-        if(this.game.turn == 1){
-            this.boardCanvasContext.clearRect(
-                p1.x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
-                p1.y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
-                this.fieldSize - this.boardCanvasContext.lineWidth,
-                this.fieldSize - this.boardCanvasContext.lineWidth
+        if(image != undefined){
+            this.boardCanvasContext.drawImage(
+                image,
+                x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
+                y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
+                this.fieldSize,
+                this.fieldSize
             );
         }
+    }
+
+    clearCurrentPlayer(){
+        // set current active player
+        let player = undefined;
+        if(this.game.turn == 1){
+            player = this.game.player1.position;
+        }
         else if(this.game.turn == 2){
+            player = this.game.player2.position;
+        }
+
+        if(player != undefined){
+            // clear current player
             this.boardCanvasContext.clearRect(
-                p2.x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
-                p2.y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
+                (player.x - 1) * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
+                (player.y - 1) * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
                 this.fieldSize - this.boardCanvasContext.lineWidth,
                 this.fieldSize - this.boardCanvasContext.lineWidth
             );
@@ -117,22 +262,33 @@ class Board{
     }
 
     drawPlayer(player) {
-        const pos_x = player.position.x;
-        const pos_y = player.position.y;
+        // get player position
+        const pos_x = player.position.x - 1;
+        const pos_y = player.position.y - 1;
 
+        // fill the rect with players prefered color
         this.boardCanvasContext.fillStyle = player.color;
+
+        // draw rect
         this.boardCanvasContext.fillRect(
             pos_x * this.fieldSize + this.boardCanvasContext.lineWidth*1.5,
             pos_y * this.fieldSize + this.boardCanvasContext.lineWidth*1.5,
             this.fieldSize - this.boardCanvasContext.lineWidth,
             this.fieldSize - this.boardCanvasContext.lineWidth
         );
-        this.boardCanvasContext.font = '12px Arial';
+
+        // add text over player for his HP and AP
+        this.boardCanvasContext.font = '15px Arial';
         this.boardCanvasContext.fillStyle = 'white';
         this.boardCanvasContext.fillText(
-            player.hp,
+            player.hp + 'HP',
             pos_x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 + 5,
-            pos_y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 + this.fieldSize/2 + 2,
+            pos_y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 + this.fieldSize/3,
+        );
+        this.boardCanvasContext.fillText(
+            player.attack_power + 'AP',
+            pos_x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 + 5,
+            pos_y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 + 2*this.fieldSize / 3,
         );
     }
 

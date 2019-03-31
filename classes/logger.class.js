@@ -9,11 +9,11 @@ class Logger{
         let color = 'black';
         if(game.turn == 1){
             message += ' 1 on turn';
-            color = 'blue';
+            color = game.player1.color;
         }
         else if(game.turn == 2){
             message += ' 2 on turn';
-            color = 'red';
+            color = game.player2.color;
         }
 
         this.turnIndicator.style.color = color;

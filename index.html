@@ -27,6 +27,11 @@
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
+
+        <div style = 'position: absolute; top: -9999px; left: -9999px;'>
+            <img id = 'hp_potion' src = 'images/hp.png' alt = 'Health potion' />
+            <img id = 'attack_power' src = 'images/ap.png' alt = 'Attack power' />
+        </div>
         
 
         <div class = 'container'>
@@ -38,9 +43,11 @@
                     <h4 id = 'turn-indicator'></h4>
                 </div>
                 <div class = 'col-xl-6'>
-                    <p>Game log</p>
-                    <hr/>
-                    <div id = 'game-log'></div>
+                    <div class = 'p-4 mt-4 border rounded shadow-sm'>
+                        <h4>Game log</h4>
+                        <hr/>
+                        <div id = 'game-log'></div>
+                    </div>
                 </div>
             </div>
             <hr/>
@@ -55,6 +62,8 @@
         <script src="classes/logger.class.js"></script>
         <!-- player class -->
         <script src="classes/player.class.js"></script>
+        <!-- field class -->
+        <script src="classes/field.class.js"></script>
         <!-- board class -->
         <script src="classes/board.class.js"></script>
         <!-- game class (holds first two) -->
@@ -66,12 +75,12 @@
                 const game = new Game();
 
                 // create players
-                const player1 = new Player(10, 150, 'blue', game);
-                const player2 = new Player(10, 150, 'red', game);
+                const player1 = new Player(30, 150, 'green', game);
+                const player2 = new Player(30, 150, 'red', game);
 
                 // assign players default positions
-                player1.setPosition(0, 0);
-                player2.setPosition(game.board.fieldsNumber - 1, game.board.fieldsNumber - 1);
+                player1.setPosition(1, 1);
+                player2.setPosition(game.board.fieldsNumber, game.board.fieldsNumber);
 
                 // assign players to game
                 game.player1 = player1;

@@ -5,6 +5,13 @@ html, body{
     padding: 50px 10px;
     font-family: 'Montserrat', sans-serif;
 }
+body{
+    position: relative;
+}
 canvas:hover{
     cursor: pointer;
+}
+#game-log{
+    max-height: 250px;
+    overflow-y: auto;
 }
