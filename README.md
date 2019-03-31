@@ -1,5 +1,5 @@
 ## How to play?
-Board is 16x16 fields. Each player is placed on random field on start, but not one beside another.
+Board is 8x8 fields. Players are placed as far as possible from each other. At top left and bottom right corners.
 
 
 Each move has a few different options:
