@@ -28,11 +28,44 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
+        <!-- icons for game -->
         <div style = 'position: absolute; top: -9999px; left: -9999px;'>
             <img id = 'hp_potion' src = 'images/hp.png' alt = 'Health potion' />
             <img id = 'attack_power' src = 'images/ap.png' alt = 'Attack power' />
         </div>
-        
+
+        <!-- fighting dialog -->
+        <div class="modal fade" id="fightingDialog" tabindex="-1" role="dialog" aria-labelledby="fightingDialogTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Fight!</h5>
+                        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button> -->
+                    </div>
+                    <div class="modal-body">
+                        <p class = 'p1-label'>Player 1, choose action:</p>
+                        <input type = 'radio' name = 'p1-action' id = 'p1-attack' value = 'attack' />
+                        <label class = 'p1-label' for = 'p1-attack'>Attack</label>
+                        <br />
+                        <input type='radio' name = 'p1-action' id='p1-defend' value='defend' />
+                        <label class = 'p1-label' for='p1-defend'>Defend</label>
+                        <hr />
+                        <p class = 'p2-label'>Player 2, choose action:</p>
+                        <input type='radio' name='p2-action' id='p2-attack' value='attack' />
+                        <label class = 'p2-label' for='p2-attack'>Attack</label>
+                        <br />
+                        <input type='radio' name='p2-action' id='p2-defend' value='defend' />
+                        <label class = 'p2-label' for='p2-defend'>Defend</label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id = 'init-fight' class="btn btn-primary">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class = 'container'>
             <h3>Board game</h3>
@@ -57,9 +90,22 @@
             </button>
         </div>
 
+        <!-- BOOTSTRAP -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+        <!-- END BOOTSTRAP -->
 
         <!-- logger class -->
         <script src="classes/logger.class.js"></script>
+        <!-- UI -->
+        <script src="classes/ui.class.js"></script>
         <!-- player class -->
         <script src="classes/player.class.js"></script>
         <!-- field class -->
@@ -92,6 +138,7 @@
 
                 // start game
                 game.start();
+                game.displayFightingDialog(undefined, undefined);
             }
 
         </script>

@@ -5,10 +5,13 @@ class Game{
     constructor() {
         this.log = new Logger();
         this.board = new Board(60, 8, this);
+        this.ui = new UI();
     }
 
     // happens when game starts
     start(){
+        // enables keyboard input (controlling) of the game
+        this.keyboard = true;
         // draws board
         this.board.drawBoard();
         // logs that game started
@@ -20,8 +23,56 @@ class Game{
         this.log.logTurn(this);
 
         // set interval to generate power ups on fields
+        this.doTheFight = this.doTheFight.bind(this);
         this.generatePowerUp = this.generatePowerUp.bind(this);
-        setInterval(this.generatePowerUp, 12000);
+        setInterval(this.generatePowerUp, 2000);
+    }
+
+    blockKeyboard(){
+        this.keyboard = false;
+    }
+
+    displayFightingDialog(){
+        const p1_labels = this.ui.fightingModalLabels.player1;
+        for(var i = 0; i < p1_labels.length; i++){
+            p1_labels[i].style.color = this.player1.color;
+        }
+        const p2_labels = this.ui.fightingModalLabels.player2;
+        for (var i = 0; i < p2_labels.length; i++) {
+            p2_labels[i].style.color = this.player2.color;
+        }
+        this.blockKeyboard();
+        this.ui.fightingModalButton.addEventListener('click', this.doTheFight, {
+            once: true
+        });
+        this.ui.fightingModal.modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+    doTheFight(){
+        const decisions = this.ui.getPlayersDecisions();
+        if(decisions.player1 == 'attack'){
+            if(decisions.player2 == 'defend'){
+                this.player2.hp -= this.player1.attack_power / 2;
+            }
+            else{
+                this.player2.hp -= this.player1.attack_power;
+            }
+        }   
+        if(decisions.player2 == 'attack'){
+            if (decisions.player1 == 'defend') {
+                this.player1.hp -= this.player1.attack_power / 2;
+            }
+            else {
+                this.player1.hp -= this.player1.attack_power;
+            }
+        }
+        
+        if(this.player1.hp <= 0){
+
+        }
     }
 
     generatePowerUp(){
@@ -41,7 +92,7 @@ class Game{
 
                     // available power ups
                     const power_ups = [
-                        'hp_potion',
+                        'hp',
                         'attack_power'
                     ];
 

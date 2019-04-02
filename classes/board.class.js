@@ -17,12 +17,6 @@ class Board{
         this.boardCanvasContext = this.boardCanvasEl.getContext('2d');
         this.boardCanvasContext.lineWidth = 2;
 
-        // load images for power ups
-        this.images = {
-            hp_potion: document.getElementById('hp_potion'),
-            attack_power: document.getElementById('attack_power'),
-        }
-
         // bind this to functions
         this.onClick = this.onClick.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
@@ -33,77 +27,79 @@ class Board{
     }
 
     onKeyDown(e){
-        var keyCode = e.keyCode;
-        if(this.game.turn == 1){
-            switch (keyCode) {
-                case 68: //d
-                    this.movePlayer(
-                        {
-                            x: this.getActivePlayer().position.x + 1,
-                            y: this.getActivePlayer().position.y
-                        }
-                    );
-                    break;
-                case 83: //s
-                    this.movePlayer(
-                        {
-                            x: this.getActivePlayer().position.x,
-                            y: this.getActivePlayer().position.y + 1
-                        }
-                    );
-                    break;
-                case 65: //a
-                    this.movePlayer(
-                        {
-                            x: this.getActivePlayer().position.x - 1,
-                            y: this.getActivePlayer().position.y
-                        }
-                    );
-                    break;
-                case 87: //w
-                    this.movePlayer(
-                        {
-                            x: this.getActivePlayer().position.x,
-                            y: this.getActivePlayer().position.y - 1
-                        }
-                    );
-                    break;
+        if(this.game.keyboard){
+            var keyCode = e.keyCode;
+            if (this.game.turn == 1) {
+                switch (keyCode) {
+                    case 68: //d
+                        this.movePlayer(
+                            {
+                                x: this.getActivePlayer().position.x + 1,
+                                y: this.getActivePlayer().position.y
+                            }
+                        );
+                        break;
+                    case 83: //s
+                        this.movePlayer(
+                            {
+                                x: this.getActivePlayer().position.x,
+                                y: this.getActivePlayer().position.y + 1
+                            }
+                        );
+                        break;
+                    case 65: //a
+                        this.movePlayer(
+                            {
+                                x: this.getActivePlayer().position.x - 1,
+                                y: this.getActivePlayer().position.y
+                            }
+                        );
+                        break;
+                    case 87: //w
+                        this.movePlayer(
+                            {
+                                x: this.getActivePlayer().position.x,
+                                y: this.getActivePlayer().position.y - 1
+                            }
+                        );
+                        break;
+                }
             }
-        }
-        else if(this.game.turn == 2){
-            switch (keyCode) {
-                case 39: //d
-                    this.movePlayer(
-                        {
-                            x: this.getActivePlayer().position.x + 1,
-                            y: this.getActivePlayer().position.y
-                        }
-                    );
-                    break;
-                case 40: //s
-                    this.movePlayer(
-                        {
-                            x: this.getActivePlayer().position.x,
-                            y: this.getActivePlayer().position.y + 1
-                        }
-                    );
-                    break;
-                case 37: //a
-                    this.movePlayer(
-                        {
-                            x: this.getActivePlayer().position.x - 1,
-                            y: this.getActivePlayer().position.y
-                        }
-                    );
-                    break;
-                case 38: //w
-                    this.movePlayer(
-                        {
-                            x: this.getActivePlayer().position.x,
-                            y: this.getActivePlayer().position.y - 1
-                        }
-                    );
-                    break;
+            else if (this.game.turn == 2) {
+                switch (keyCode) {
+                    case 39: //d
+                        this.movePlayer(
+                            {
+                                x: this.getActivePlayer().position.x + 1,
+                                y: this.getActivePlayer().position.y
+                            }
+                        );
+                        break;
+                    case 40: //s
+                        this.movePlayer(
+                            {
+                                x: this.getActivePlayer().position.x,
+                                y: this.getActivePlayer().position.y + 1
+                            }
+                        );
+                        break;
+                    case 37: //a
+                        this.movePlayer(
+                            {
+                                x: this.getActivePlayer().position.x - 1,
+                                y: this.getActivePlayer().position.y
+                            }
+                        );
+                        break;
+                    case 38: //w
+                        this.movePlayer(
+                            {
+                                x: this.getActivePlayer().position.x,
+                                y: this.getActivePlayer().position.y - 1
+                            }
+                        );
+                        break;
+                }
             }
         }
     }
@@ -117,11 +113,9 @@ class Board{
         const x = pos.x;
         const y = pos.y;
 
-        let player = undefined;
-        let move_distance = 100;
-
         // set player based on turn
-        player = this.getActivePlayer();
+        let player = this.getActivePlayer();
+        let move_distance = 100;
 
         // calc players move distance
         move_distance = Math.abs(Math.pow(player.position.x - x, 2) + Math.pow(player.position.y - y, 2));
@@ -131,30 +125,32 @@ class Board{
                 alert('You can only move to fields around you and in board');
             }
             else {
-                // player moved
-
-                // clear current player from his position
-                this.clearCurrentPlayer();
-
-                // update players position
-                player.updatePlayerPosition(x, y);
-                if (this.fields[x - 1][y - 1].power_up != undefined) {
-                    const power_up = this.fields[x - 1][y - 1].power_up;
-                    this.fields[x - 1][y - 1].power_up = undefined;
-
-                    if (power_up == 'hp_potion') {
-                        player.hp += 10;
-                    }
-                    if (power_up == 'attack_power') {
-                        player.attack_power += 10;
-                    }
+                const other_player = this.getSecondPlayer(); 
+                if(other_player.position.x == x && other_player.position.y == y){
+                    // players collided, don't draw one on top of another
+                    this.game.displayFightingDialog();
                 }
+                else{
+                    // clear current player from his position
+                    this.clearCurrentPlayer();
 
-                // change turns in game
-                this.game.changeTurn();
+                    // update players position
+                    player.updatePlayerPosition(x, y);
 
-                // draw player again
-                this.drawPlayer(player);
+                    // apply power ups if field has any
+                    if (this.fields[x - 1][y - 1].power_up != undefined) {
+                        const power_up = this.fields[x - 1][y - 1].power_up;
+                        this.fields[x - 1][y - 1].power_up = undefined;
+
+                        player[power_up] += 10;
+                    }
+
+                    // change turns in game
+                    this.game.changeTurn();
+
+                    // draw player again
+                    this.drawPlayer(player);
+                }
             }
         }
     }
@@ -166,6 +162,17 @@ class Board{
         }
         else if (this.game.turn == 2) {
             player = this.game.player2;
+        }
+        return player;
+    }
+
+    getSecondPlayer(){
+        let player = undefined;
+        if (this.game.turn == 1) {
+            player = this.game.player2;
+        }
+        else if (this.game.turn == 2) {
+            player = this.game.player1;
         }
         return player;
     }
@@ -221,13 +228,7 @@ class Board{
     }
 
     drawPowerUp(x, y, power_up){
-        let image = undefined;
-        if (power_up == 'hp_potion') {
-            image = this.images.hp_potion;
-        }
-        if (power_up == 'attack_power') {
-            image = this.images.attack_power;
-        }
+        let image = this.game.ui.icons[power_up];
 
         if(image != undefined){
             this.boardCanvasContext.drawImage(
