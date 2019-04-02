@@ -28,6 +28,24 @@ class Game{
         setInterval(this.generatePowerUp, 2000);
     }
 
+    end(winnerInfo){
+        // hide fight modal
+        this.ui.fightingModal.modal("hide");
+
+        // clear canvas and remove listeners on click
+        this.board.destroy();
+
+        // unplug players
+        this.player1 = undefined;
+        this.player2 = undefined;
+        
+        // show winning player on modal
+        this.ui.showWinningModal(winnerInfo);
+    }
+
+    unblockKeyboard(){
+        this.keyboard = true;
+    }
     blockKeyboard(){
         this.keyboard = false;
     }
@@ -53,6 +71,9 @@ class Game{
 
     doTheFight(){
         const decisions = this.ui.getPlayersDecisions();
+        let game_end = false;
+        let winnerInfo = undefined;
+
         if(decisions.player1 == 'attack'){
             if(decisions.player2 == 'defend'){
                 this.player2.hp -= this.player1.attack_power / 2;
@@ -60,18 +81,45 @@ class Game{
             else{
                 this.player2.hp -= this.player1.attack_power;
             }
-        }   
-        if(decisions.player2 == 'attack'){
+            if(this.player2.hp <= 0){
+                game_end = true;
+                winnerInfo = {
+                    label: 'Player 1',
+                    obj: this.player1
+                };
+            }
+        }
+        if(decisions.player2 == 'attack' && !game_end){
             if (decisions.player1 == 'defend') {
-                this.player1.hp -= this.player1.attack_power / 2;
+                this.player1.hp -= this.player2.attack_power / 2;
             }
             else {
-                this.player1.hp -= this.player1.attack_power;
+                this.player1.hp -= this.player2.attack_power;
+            }
+            if (this.player1.hp <= 0) {
+                game_end = true;
+                winnerInfo = {
+                    label: 'Player 2',
+                    obj: this.player2
+                };
             }
         }
         
-        if(this.player1.hp <= 0){
+        if(game_end){
+            this.end(winnerInfo);
+        }
+        else{
+            this.board.movePlayer(this.player1, {
+                x: 1,
+                y: 1
+            }, true)
 
+            this.board.movePlayer(this.player2, {
+                x: this.board.fieldsNumber,
+                y: this.board.fieldsNumber
+            }, true)
+            this.ui.fightingModal.modal("hide");
+            this.unblockKeyboard();
         }
     }
 

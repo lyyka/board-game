@@ -19,6 +19,13 @@ class UI{
             player2: document.getElementsByClassName("p2-label")
         }
 
+        // win modal
+        this.winModal = $("#winDialog");
+        this.winModalLabels = {
+            title: document.getElementById("winModal-title"),
+            content: document.getElementById("winModal-content")
+        }
+
     }
 
     getPlayersDecisions(){
@@ -27,5 +34,18 @@ class UI{
             player2: $('input[name=p2-action]:checked').val()
         }
         return this.fightingModalDecisions;
+    }
+
+    showWinningModal(winnerInfo){
+        // add text to labels
+        this.winModalLabels.title.innerText = winnerInfo.label + ' won the match!';
+        this.winModalLabels.content.innerText = 'Congratulations! You won the game by defeating your oponnent and getting his health down to zero. Feel free to start another round by pressing "Start" button, as usual.';
+
+        // color the labels
+        this.winModalLabels.title.style.color = winnerInfo.obj.color;
+        this.winModalLabels.content.style.color = winnerInfo.obj.color;
+
+        // show modal
+        this.winModal.modal();
     }
 }

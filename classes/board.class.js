@@ -33,6 +33,7 @@ class Board{
                 switch (keyCode) {
                     case 68: //d
                         this.movePlayer(
+                            this.getActivePlayer(),
                             {
                                 x: this.getActivePlayer().position.x + 1,
                                 y: this.getActivePlayer().position.y
@@ -41,6 +42,7 @@ class Board{
                         break;
                     case 83: //s
                         this.movePlayer(
+                            this.getActivePlayer(),
                             {
                                 x: this.getActivePlayer().position.x,
                                 y: this.getActivePlayer().position.y + 1
@@ -49,6 +51,7 @@ class Board{
                         break;
                     case 65: //a
                         this.movePlayer(
+                            this.getActivePlayer(),
                             {
                                 x: this.getActivePlayer().position.x - 1,
                                 y: this.getActivePlayer().position.y
@@ -57,6 +60,7 @@ class Board{
                         break;
                     case 87: //w
                         this.movePlayer(
+                            this.getActivePlayer(),
                             {
                                 x: this.getActivePlayer().position.x,
                                 y: this.getActivePlayer().position.y - 1
@@ -69,6 +73,7 @@ class Board{
                 switch (keyCode) {
                     case 39: //d
                         this.movePlayer(
+                            this.getActivePlayer(),
                             {
                                 x: this.getActivePlayer().position.x + 1,
                                 y: this.getActivePlayer().position.y
@@ -77,6 +82,7 @@ class Board{
                         break;
                     case 40: //s
                         this.movePlayer(
+                            this.getActivePlayer(),
                             {
                                 x: this.getActivePlayer().position.x,
                                 y: this.getActivePlayer().position.y + 1
@@ -85,6 +91,7 @@ class Board{
                         break;
                     case 37: //a
                         this.movePlayer(
+                            this.getActivePlayer(),
                             {
                                 x: this.getActivePlayer().position.x - 1,
                                 y: this.getActivePlayer().position.y
@@ -93,6 +100,7 @@ class Board{
                         break;
                     case 38: //w
                         this.movePlayer(
+                            this.getActivePlayer(),
                             {
                                 x: this.getActivePlayer().position.x,
                                 y: this.getActivePlayer().position.y - 1
@@ -106,21 +114,20 @@ class Board{
 
     onClick(e){
         const pos = this.getPositionSquare(e);
-        this.movePlayer(pos);
+        this.movePlayer(this.getActivePlayer(), pos);
     }
 
-    movePlayer(pos){
+    movePlayer(player, pos, forceMove = false){
         const x = pos.x;
         const y = pos.y;
 
         // set player based on turn
-        let player = this.getActivePlayer();
         let move_distance = 100;
 
         // calc players move distance
         move_distance = Math.abs(Math.pow(player.position.x - x, 2) + Math.pow(player.position.y - y, 2));
         if (player != undefined) {
-            if (move_distance > 2 || move_distance == 0 || x > this.fieldsNumber || y > this.fieldsNumber || x <= 0 || y <= 0) {
+            if ((move_distance > 2 || move_distance == 0 || x > this.fieldsNumber || y > this.fieldsNumber || x <= 0 || y <= 0) && !forceMove) {
                 // move distance greater than 2, or on the same spot
                 alert('You can only move to fields around you and in board');
             }
@@ -225,6 +232,14 @@ class Board{
         }
 
         this.boardCanvasContext.stroke();
+    }
+
+    destroy(){
+        // clear canvas
+        this.boardCanvasContext.clearRect(0, 0, this.boardCanvasEl.width, this.boardCanvasEl.height);
+
+        this.boardCanvasEl.removeEventListener('click', this.onClick);
+        document.body.removeEventListener('keydown', this.onKeyDown);
     }
 
     drawPowerUp(x, y, power_up){

@@ -47,14 +47,14 @@
                     </div>
                     <div class="modal-body">
                         <p class = 'p1-label'>Player 1, choose action:</p>
-                        <input type = 'radio' name = 'p1-action' id = 'p1-attack' value = 'attack' />
+                        <input type = 'radio' name = 'p1-action' id = 'p1-attack' value = 'attack' checked />
                         <label class = 'p1-label' for = 'p1-attack'>Attack</label>
                         <br />
                         <input type='radio' name = 'p1-action' id='p1-defend' value='defend' />
                         <label class = 'p1-label' for='p1-defend'>Defend</label>
                         <hr />
                         <p class = 'p2-label'>Player 2, choose action:</p>
-                        <input type='radio' name='p2-action' id='p2-attack' value='attack' />
+                        <input type='radio' name='p2-action' id='p2-attack' value='attack' checked />
                         <label class = 'p2-label' for='p2-attack'>Attack</label>
                         <br />
                         <input type='radio' name='p2-action' id='p2-defend' value='defend' />
@@ -62,6 +62,25 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" id = 'init-fight' class="btn btn-primary">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- winning modal -->
+        <!-- fighting dialog -->
+        <div class="modal fade" id="winDialog" tabindex="-1" role="dialog" aria-labelledby="winModal-title"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="winModal-title">Fight!</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p id = 'winModal-content'></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -116,13 +135,19 @@
         <script src="classes/game.class.js"></script>
         <!-- init -->
         <script>
-            document.getElementById('start-game').onclick = function(){
+            document.getElementById('start-game').onclick = onClick;
+
+            function onClick(){
+                // show modal to choose colors
+            }
+
+            function startGame(p1_color, p2_color){
                 // create new game, this will also create a board object inside game and draw it
                 const game = new Game();
 
                 // create players
-                const player1 = new Player(30, 150, 'green', game);
-                const player2 = new Player(30, 150, 'red', game);
+                const player1 = new Player(30, 150, p1_color, game);
+                const player2 = new Player(30, 150, p2_color, game);
 
                 // assign players default positions
                 player1.setPosition(1, 1);
@@ -138,7 +163,6 @@
 
                 // start game
                 game.start();
-                game.displayFightingDialog(undefined, undefined);
             }
 
         </script>
