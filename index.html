@@ -19,6 +19,8 @@
             integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
         <!-- font -->
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" />
+        <!-- animate.css -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
         <!-- this -->
         <link rel="stylesheet" href="styles/index.css" />
 
@@ -30,8 +32,50 @@
 
         <!-- icons for game -->
         <div style = 'position: absolute; top: -9999px; left: -9999px;'>
+            <!-- board icons -->
             <img id = 'hp_potion' src = 'images/hp.png' alt = 'Health potion' />
             <img id = 'attack_power' src = 'images/ap.png' alt = 'Attack power' />
+        </div>
+
+        <!-- setup modal -->
+        <div class="modal fade" id="gameSetup" tabindex="-1" role="dialog" aria-labelledby="gameSetupTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Choose characters and colors</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div id = 'p1-setup'>
+                            <h5><strong>Player 1:</strong></h5>
+                            <!-- player characters -->
+                            <img class = 'm-2 player-character pc-1 img-fluid' data-player = "1" width = "64" id='player_batman' src='images/characters/batman.png' alt='Batman' />
+                            <img class = 'm-2 player-character pc-1 img-fluid' data-player = "1" width = "64" id='player_bear' src='images/characters/bear.png' alt='Bear' />
+                            <img class = 'm-2 player-character pc-1 img-fluid' data-player = "1" width = "64" id='player_bunny' src='images/characters/bunny.png' alt='Bunny' />
+                            <img class = 'm-2 player-character pc-1 img-fluid' data-player = "1" width = "64" id='player_duck' src='images/characters/duck.png' alt='Duck' />
+                            <img class = 'm-2 player-character pc-1 img-fluid' data-player = "1" width = "64" id='player_flash' src='images/characters/flash.png' alt='Flash' />
+                            <img class = 'm-2 player-character pc-1 img-fluid' data-player = "1" width = "64" id='player_guy' src='images/characters/guy.png' alt='Guy' />
+                            <img class = 'm-2 player-character pc-1 img-fluid' data-player = "1" width = "64" id='player_ninja_turtle' src='images/characters/ninja_turtle.png' alt='Ninja Turtle' />
+                        </div>
+                        <hr/>
+                        <div id = 'p2-setup'>
+                            <h5><strong>Player 2:</strong></h5>
+                            <!-- player characters -->
+                            <img class = 'm-2 player-character pc-2 img-fluid' data-player = "2" width="64" src='images/characters/batman.png' alt='Batman' />
+                            <img class = 'm-2 player-character pc-2 img-fluid' data-player = "2" width="64" src='images/characters/bear.png' alt='Bear' />
+                            <img class = 'm-2 player-character pc-2 img-fluid' data-player = "2" width="64" src='images/characters/bunny.png' alt='Bunny' />
+                            <img class = 'm-2 player-character pc-2 img-fluid' data-player = "2" width="64" src='images/characters/duck.png' alt='Duck' />
+                            <img class = 'm-2 player-character pc-2 img-fluid' data-player = "2" width="64" src='images/characters/flash.png' alt='Flash' />
+                            <img class = 'm-2 player-character pc-2 img-fluid' data-player = "2" width="64" src='images/characters/guy.png' alt='Guy' />
+                            <img class = 'm-2 player-character pc-2 img-fluid' data-player = "2" width="64" src='images/characters/ninja_turtle.png'
+                                alt='Ninja Turtle' />
+                        </div>
+                        <br/>
+                        <br/>
+                        <button id = 'start-game-final' class = 'btn btn-danger w-100'>Fight!</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- fighting dialog -->
@@ -87,26 +131,109 @@
         </div>
 
         <div class = 'container'>
-            <h3>Board game</h3>
+            <h3 class = 'animated fadeInLeft'>Board game</h3>
             <div class = 'row'>
-                <div class = 'col-xl-6'>
+                <div class = 'col-xl-6 mb-4'>
                     <canvas id='board'></canvas>
                     <br/>
                     <h4 id = 'turn-indicator'></h4>
+                    <div id = 'player-status-wrapper' class = 'd-none'>
+                        <!-- player 1 status -->
+                        <div class = 'p-4 rounded shadow-sm border mb-2'>
+                            <div class = 'row'>
+                                <div class = 'col-md-6' id = 'p1-status-image'>
+                                    
+                                </div>
+                                <div class = 'col-md-6'>
+                                    <p id = 'p1-status-label'><strong>Player 1</strong></p>
+                                    <hr/>
+                                    <p id = 'p1-status-hp'></p>
+                                    <p id = 'p1-status-ap'></p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- player 2 status -->
+                        <div class = 'p-4 rounded shadow-sm border mb-2'>
+                            <div class='row'>
+                                <div class='col-md-6' id = 'p2-status-image'>
+
+                                </div>
+                                <div class='col-md-6'>
+                                    <p id='p2-status-label'><strong>Player 2</strong></p>
+                                    <hr/>
+                                    <p id='p2-status-hp'></p>
+                                    <p id='p2-status-ap'></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class = 'col-xl-6'>
-                    <div class = 'p-4 mt-4 border rounded shadow-sm'>
+                <div class = 'col-xl-6 mb-4'>
+                    <div class = 'animated fadeInRight p-4 border rounded shadow-sm mb-2'>
                         <h4>Game log</h4>
                         <hr/>
                         <div id = 'game-log'></div>
                     </div>
+                    <div class = 'animated fadeInRight p-4 border rounded shadow-sm mb-2'>
+                        <h4>Controls</h4><hr/>
+                        <p>
+                            <strong>WASD</strong> - move Player 1
+                            <br/>
+                            <strong>UP,DOWN,LEFT,RIGHT</strong> arrows - move Player 2
+                        </p>
+                        <p class = 'text-center'>
+                            <strong>OR</strong>
+                        </p>
+                        <p>
+                            Click on fields using <strong>left mouse click</strong>
+                        </p>
+                    </div>
+                    <div class='animated fadeInRight p-4 border rounded shadow-sm bg-secondary text-white'>
+                        <h4>Options (not working yet)</h4><hr/>
+                        <div class = 'row mb-2'>
+                            <div class = 'col-md-6'>
+                                Faster appear power ups
+                            </div>
+                            <div class='col-md-6 cb-col-resp'>
+                                <label class="switch" for="faster-powerups">
+                                    <input type="checkbox" id="faster-powerups" />
+                                    <div class="slider round"></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class='row mb-2'>
+                            <div class='col-md-6'>
+                                One-shot game
+                            </div>
+                            <div class='col-md-6 cb-col-resp'>
+                                <label class="switch" for="one-shot-game">
+                                    <input type="checkbox" id="one-shot-game" />
+                                    <div class="slider round"></div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
             <hr/>
-            <button type = 'button' id = 'start-game' class = 'btn btn-success'>
+            <button type = 'button' id = 'start-game' class = 'animated fadeInLeft btn btn-success'>
                 <i class="far fa-play-circle"></i>
                 Start
             </button>
+            <hr/>
+            <p class = 'text-center'>
+                <span class="fas fa-code"></span>
+                with
+                <span class="fas fa-heart" style="color:red;"></span>
+                by
+                <a target="_blank" href="https://www.upwork.com/o/profiles/users/_~01770946482157855f/"
+                    class="text-success">Luka Robajac</a>
+                <br />
+                <a class="text-dark" target="_blank" href="https://www.buymeacoffee.com/lyyka">Support the
+                    developer <span class="fas fa-coffee"></span></a>
+            </p>
         </div>
 
         <!-- BOOTSTRAP -->
@@ -135,19 +262,89 @@
         <script src="classes/game.class.js"></script>
         <!-- init -->
         <script>
-            document.getElementById('start-game').onclick = onClick;
+            let current_game = undefined;
+            let player1_image = undefined;
+            let player2_image = undefined;
 
-            function onClick(){
-                // show modal to choose colors
+            (function(){
+                // just disable scroll on arrow keys due to game controls
+                window.addEventListener("keydown", function (e) {
+                    // space and arrow keys
+                    if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+                        e.preventDefault();
+                    }
+                }, false);
+
+                // binds on click listener to green start button
+                document.getElementById('start-game').onclick = setup;
+            })();
+
+            function setup(){
+                if(current_game != undefined){
+                    current_game.clearEverything();
+                    current_game = undefined;
+                }
+                const player_chars = document.getElementsByClassName('player-character');
+                for(var i = 0; i < player_chars.length; i++){
+                    player_chars[i].onclick = onImageClick;
+                }
+                // show modal to choose colors and characters
+                $("#gameSetup").modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+
+                document.getElementById('start-game-final').addEventListener('click', preStart, {
+                    once: true
+                });
             }
 
-            function startGame(p1_color, p2_color){
+            function onImageClick(e){
+                // get clicked image
+                let target = e.target || e.srcElement;
+                // get data-player attribute of the image so we know which image is for which player
+                let for_player = target.getAttribute('data-player');
+                let all_images = undefined;
+                if (for_player == 1) {
+                    player1_image = target;
+                    all_images = document.getElementsByClassName('pc-1');
+                }
+                if (for_player == 2) {
+                    player2_image = target;
+                    all_images = document.getElementsByClassName('pc-2');
+                }
+                if(all_images != undefined){
+                    // remove active class from all images so only this one remains selected
+                    for (var i = 0; i < all_images.length; i++) {
+                        const image = all_images[i];
+                        image.classList.remove('active');
+                    }
+                }
+                // add active to this image
+                target.classList.add('active');
+            }
+
+            function preStart(){
+                if(player1_image != undefined && player2_image != undefined){
+                    $("#gameSetup").modal('hide');
+                    startGame(player1_image, player2_image);
+                }
+                else{
+                    alert('Both players should choose a character first!');
+                }
+            }
+
+            function startGame(p1_image, p2_image){
                 // create new game, this will also create a board object inside game and draw it
                 const game = new Game();
+                current_game = game;
 
+                // remove active class from image elements
+                p1_image.classList.remove('active', 'player-character');
+                p2_image.classList.remove('active', 'player-character');
                 // create players
-                const player1 = new Player(30, 150, p1_color, game);
-                const player2 = new Player(30, 150, p2_color, game);
+                const player1 = new Player(30, 150, p1_image, game);
+                const player2 = new Player(30, 150, p2_image, game);
 
                 // assign players default positions
                 player1.setPosition(1, 1);
@@ -160,6 +357,10 @@
                 // draw players
                 game.board.drawPlayer(player1)
                 game.board.drawPlayer(player2);
+
+                // set player statuses
+                game.drawStatuses();
+                
 
                 // start game
                 game.start();

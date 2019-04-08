@@ -127,6 +127,7 @@ class Board{
         // calc players move distance
         move_distance = Math.abs(Math.pow(player.position.x - x, 2) + Math.pow(player.position.y - y, 2));
         if (player != undefined) {
+            console.log("Move distance: " + move_distance);
             if ((move_distance > 2 || move_distance == 0 || x > this.fieldsNumber || y > this.fieldsNumber || x <= 0 || y <= 0) && !forceMove) {
                 // move distance greater than 2, or on the same spot
                 alert('You can only move to fields around you and in board');
@@ -283,29 +284,39 @@ class Board{
         const pos_y = player.position.y - 1;
 
         // fill the rect with players prefered color
-        this.boardCanvasContext.fillStyle = player.color;
+        // this.boardCanvasContext.fillStyle = player.color;
 
-        // draw rect
-        this.boardCanvasContext.fillRect(
-            pos_x * this.fieldSize + this.boardCanvasContext.lineWidth*1.5,
-            pos_y * this.fieldSize + this.boardCanvasContext.lineWidth*1.5,
+        this.boardCanvasContext.drawImage(
+            player.image,
+            pos_x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
+            pos_y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
             this.fieldSize - this.boardCanvasContext.lineWidth,
             this.fieldSize - this.boardCanvasContext.lineWidth
         );
 
+        this.game.drawStatuses();
+
+        // draw rect
+        // this.boardCanvasContext.fillRect(
+        //     pos_x * this.fieldSize + this.boardCanvasContext.lineWidth*1.5,
+        //     pos_y * this.fieldSize + this.boardCanvasContext.lineWidth*1.5,
+        //     this.fieldSize - this.boardCanvasContext.lineWidth,
+        //     this.fieldSize - this.boardCanvasContext.lineWidth
+        // );
+
         // add text over player for his HP and AP
-        this.boardCanvasContext.font = '15px Arial';
-        this.boardCanvasContext.fillStyle = 'white';
-        this.boardCanvasContext.fillText(
-            player.hp + 'HP',
-            pos_x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 + 5,
-            pos_y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 + this.fieldSize/3,
-        );
-        this.boardCanvasContext.fillText(
-            player.attack_power + 'AP',
-            pos_x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 + 5,
-            pos_y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 + 2*this.fieldSize / 3,
-        );
+        // this.boardCanvasContext.font = '15px Arial';
+        // this.boardCanvasContext.fillStyle = 'black';
+        // this.boardCanvasContext.fillText(
+        //     player.hp + 'HP',
+        //     pos_x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
+        //     pos_y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 - 30,
+        // );
+        // this.boardCanvasContext.fillText(
+        //     player.attack_power + 'AP',
+        //     pos_x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
+        //     pos_y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 - 15,
+        // );
     }
 
 }

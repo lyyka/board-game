@@ -4,19 +4,22 @@ class Logger{
         this.turnIndicator = document.getElementById('turn-indicator');
     }
 
+    clear(){
+        while(this.logWrapper.firstChild){
+            this.logWrapper.removeChild(this.logWrapper.firstChild);
+        }
+    }
+
     logTurn(game){
         let message = 'Player';
         let color = 'black';
         if(game.turn == 1){
             message += ' 1 on turn';
-            color = game.player1.color;
         }
         else if(game.turn == 2){
             message += ' 2 on turn';
-            color = game.player2.color;
         }
 
-        this.turnIndicator.style.color = color;
         this.turnIndicator.innerText = message;
     }
 

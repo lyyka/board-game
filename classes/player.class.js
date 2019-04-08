@@ -5,10 +5,11 @@ class Player{
     // hp - how much health this player will have
     // color - prefered color
     // game - game object to which this player belongs
-    constructor(attack_power, hp, color, game){
+    constructor(attack_power, hp, image, game){
         this.attack_power = attack_power;
         this.hp = hp;
-        this.color = color;
+        // this.color = color;
+        this.image = image;
         this.game = game;
     }
 
@@ -31,6 +32,6 @@ class Player{
         else{
             player = 'Player 2 ';
         }
-        this.game.log.logMessage(player + 'moved to (' + (x+1) + ', ' + (y+1) + ')', this.color);
+        this.game.log.logMessage(player + 'moved to (' + (x+1) + ', ' + (y+1) + ')');
     }
 }

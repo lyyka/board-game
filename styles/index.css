@@ -11,6 +11,23 @@ body{
 canvas:hover{
     cursor: pointer;
 }
+.player-character{
+    box-sizing: border-box;
+}
+.active{
+    border-radius: 10px;
+    padding: 7px;
+    border: 2px solid green;
+}
+.player-character:hover:not(.active){
+    cursor: pointer;
+    border: 1px solid #b3b3b3;
+}
+.player-character:active{
+    border-radius: 10px;
+    padding: 7px;
+    border: 2px solid red;
+}
 #game-log{
     max-height: 250px;
     overflow-y: auto;
@@ -67,4 +84,65 @@ canvas:hover{
     opacity: 1;
     -webkit-transform: scale(1);
     transform: scale(1);
+}
+
+
+/* custom checkboxes for options */
+.switch {
+  display: inline-block;
+  height: 31px;
+  position: relative;
+  width: 56px;
+}
+
+.switch input[type='checkbox'] {
+  display:none;
+}
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .3s;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 4px;
+  content: "";
+  height: 23px;
+  width: 23px;
+  left: 4px;
+  position: absolute;
+  transition: .3s;
+}
+
+input[type='checkbox']:checked + .slider {
+  background-color: #28A745;
+}
+
+input[type='checkbox']:checked + .slider:before {
+  transform: translateX(23px);
+}
+
+.slider.round {
+  border-radius: 31px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.cb-col-resp{
+    text-align: right;
+}
+
+@media screen and (max-width:768px){
+    .cb-col-resp{
+        text-align: left;
+    }
 }
