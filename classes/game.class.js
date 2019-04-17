@@ -4,7 +4,7 @@ class Game{
     // initializes new message logger for this game and creates new board
     constructor(options={}) {
         this.log = new Logger();
-        this.board = new Board(64, 8, this);
+        this.board = new Board(64, 10, this);
         this.ui = new UI();
         this.powerUpInterval = undefined;
         this.options = options; // will be set on startGame() in init
@@ -24,6 +24,7 @@ class Game{
 
         // turn is 1 by default
         this.turn = 1;
+        this.board.drawAvailableFields();
 
         // logs turn
         this.log.logTurn(this);
@@ -175,7 +176,7 @@ class Game{
 
     generatePowerUp(){
         // you can only generate SQRT(fields_number) + 1 number of power ups on board
-        if(this.board.countPowerUps() <= Math.sqrt(this.board.fieldsNumber) + 1){
+        if(this.board.countPowerUps() <= this.options.maxPowerups){
             let loop = true;
             while(loop){
                 const rand_x = Math.floor(Math.random() * Math.floor(this.board.fieldsNumber));
@@ -209,7 +210,7 @@ class Game{
 
     blockFields(){
         // you can only generate SQRT(fields_number) + 1 number of power ups on board
-        for(var i = 0; i <= Math.sqrt(this.board.fieldsNumber) + 1; i++){
+        for(var i = 0; i <= this.options.maxDeadFields; i++){
             let loop = true;
             while(loop){
                 const rand_x = Math.floor(Math.random() * Math.floor(this.board.fieldsNumber));
@@ -240,6 +241,7 @@ class Game{
             this.turn = 1;
         }
         this.log.logTurn(this);
+        this.board.drawAvailableFields();
     }
 
 }

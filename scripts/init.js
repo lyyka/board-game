@@ -90,21 +90,24 @@ function startGame(p1_image, p2_image){
     game.player1 = player1;
     game.player2 = player2;
 
-    // draw players
-    game.board.drawPlayer(player1)
-    game.board.drawPlayer(player2);
-
     // set player statuses
     game.drawStatuses();
 
     // start game
     game.start();
+
+    // draw players
+    game.board.drawPlayer(player1)
+    game.board.drawPlayer(player2);
 }
 
 function options(){
-    return {
+    const options = {
         fasterPowerups: $("#faster-powerups").prop('checked'),
         oneShotGame: $("#one-shot-game").prop('checked'),
-        deadFields: $("#dead-fields").prop('checked')
+        deadFields: $("#dead-fields").prop('checked'),
+        maxPowerups: 10,
+        maxDeadFields: 10
     };
+    return options;
 }

@@ -5,6 +5,7 @@ class UI{
         this.icons = {
             hp: document.getElementById('hp_potion'),
             attack_power: document.getElementById('attack_power'),
+            wall: document.getElementById('wall')
             // players: {
             //     batman: document.getElementById('player_batman'),
             //     bear: document.getElementById('player_bear'),

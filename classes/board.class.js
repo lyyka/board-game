@@ -129,11 +129,12 @@ class Board{
         // calc players move distance
         move_distance = Math.abs(Math.pow(player.position.x - x, 2) + Math.pow(player.position.y - y, 2));
         if (player != undefined) {
-            if ((move_distance > 2 || move_distance == 0 || x > this.fieldsNumber || y > this.fieldsNumber || x <= 0 || y <= 0 || this.fields[x-1][y-1].dead) && !forceMove) {
+            if ((move_distance > 1 || move_distance == 0 || x > this.fieldsNumber || y > this.fieldsNumber || x <= 0 || y <= 0 || this.fields[x-1][y-1].dead) && !forceMove) {
                 // move distance greater than 2, or on the same spot
-                alert('You can only move to fields around you, in board and not blocked ones.');
+                alert('You can only move to highlighted fields');
             }
             else {
+                this.clearAvailableFields();
                 const other_player = this.getSecondPlayer();
                 if(other_player.position.x == x && other_player.position.y == y){
                     // players collided, don't draw one on top of another
@@ -146,7 +147,6 @@ class Board{
                     // update players position
                     player.updatePlayerPosition(x, y);
 
-                    // apply power ups if field has any
                     if (this.fields[x - 1][y - 1].power_up != undefined) {
                         const power_up = this.fields[x - 1][y - 1].power_up;
                         this.fields[x - 1][y - 1].power_up = undefined;
@@ -154,11 +154,11 @@ class Board{
                         player[power_up] += 10;
                     }
 
-                    // change turns in game
-                    this.game.changeTurn();
-
                     // draw player again
                     this.drawPlayer(player);
+
+                    // change turns in game
+                    this.game.changeTurn();
                 }
             }
         }
@@ -222,14 +222,14 @@ class Board{
             for (var y = 0; y < this.fieldsNumber; y++) {
                 // add new field
                 this.fields[i][y] = new Field(i, y, this);
-
-                // draw field
+                // draw normal field
                 this.boardCanvasContext.rect(
                     i * this.fieldSize+this.boardCanvasContext.lineWidth,
                     y * this.fieldSize+this.boardCanvasContext.lineWidth,
                     this.fieldSize,
                     this.fieldSize
                 );
+
             }
         }
 
@@ -258,10 +258,146 @@ class Board{
         }
     }
 
+    // redrawPowerups(){
+    //     for(var i = 0; i < this.fields.length; i++){
+    //         for(var y = 0; y < this.fields.length; y++){
+    //             this.drawPowerUp(i, y, this.fields[i][y].power_up);
+    //         }
+    //     }
+    // }
+
+    drawAvailableFields(){
+
+        this.currentlyAvailableFields = [];
+
+        const draw = (x, y, board) => {
+            if(!board.fields[x][y].dead){
+                board.currentlyAvailableFields.push({
+                    x: x,
+                    y: y
+                });
+
+                const other_player = this.getSecondPlayer();
+                // other player draw-over
+                let draw_over = false;
+                if(other_player.position.x-1 == x && other_player.position.y-1 == y){
+                    board.boardCanvasContext.fillStyle = '#f44141';
+                    draw_over = true;
+                }
+                else{
+                    board.boardCanvasContext.fillStyle = '#65f442';
+                }
+
+                board.boardCanvasContext.fillRect(
+                    x * this.fieldSize + 1.5*board.boardCanvasContext.lineWidth,
+                    y * this.fieldSize + 1.5*board.boardCanvasContext.lineWidth,
+                    board.fieldSize - 1.1*board.boardCanvasContext.lineWidth,
+                    board.fieldSize - 1.1*board.boardCanvasContext.lineWidth
+                );
+
+                if(draw_over){
+                    this.drawPlayer(other_player);
+                }
+                if(this.fields[x][y].power_up != undefined){
+                    this.drawPowerUp(x, y , this.fields[x][y].power_up);
+                }
+
+            }
+        };
+
+        const player = this.getActivePlayer();
+        let x = player.position.x-1; // start from 0
+        let y = player.position.y-1; // start from 0
+        // mark up
+        let drawn = 0;
+        for(var i = y-1; i >= 0 && drawn < 3 && !this.fields[x][i].dead; i--){
+            // console.log(x + ', ' + i);
+            draw(x, i, this);
+            drawn++;
+        }
+        // mark down
+        drawn = 0;
+        for(var i = y+1; i < this.fieldsNumber && drawn < 3 && !this.fields[x][i].dead; i++){
+            // console.log(x + ', ' + i);
+            draw(x, i, this);
+            drawn++;
+        }
+        // mark left
+        drawn = 0;
+        for(var i = x-1; i >= 0 && drawn < 3 && !this.fields[i][y].dead; i--){
+            // console.log(i + ', ' + y);
+            draw(i, y, this);
+            drawn++;
+        }
+        // mark right
+        drawn = 0;
+        for(var i = x+1; i < this.fieldsNumber && drawn < 3 && !this.fields[i][y].dead; i++){
+            // console.log(i + ', ' + y);
+            draw(i, y, this);
+            drawn++;
+        }
+        // console.log('---------------');
+
+        // this.redrawPowerups();
+    }
+
+    clearAvailableFields(){
+        const draw = (x, y, board) => {
+            if(!this.fields[x][y].dead){
+                board.boardCanvasContext.fillStyle = 'white';
+                board.boardCanvasContext.fillRect(
+                    x * this.fieldSize + 1.5*board.boardCanvasContext.lineWidth,
+                    y * this.fieldSize + 1.5*board.boardCanvasContext.lineWidth,
+                    board.fieldSize - 1.1*board.boardCanvasContext.lineWidth,
+                    board.fieldSize - 1.1*board.boardCanvasContext.lineWidth
+                );
+                if(this.fields[x][y].power_up != undefined){
+                    this.drawPowerUp(x, y , this.fields[x][y].power_up);
+                }
+            }
+        };
+
+        const player = this.getActivePlayer();
+        let x = player.position.x-1; // start from 0
+        let y = player.position.y-1; // start from 0
+        // mark up
+        let drawn = 0;
+        for(var i = y-1; i >= 0 && drawn < 3; i--){
+            // console.log(x + ', ' + i);
+            draw(x, i, this);
+            drawn++;
+        }
+        // mark down
+        drawn = 0;
+        for(var i = y+1; i < this.fieldsNumber && drawn < 3; i++){
+            // console.log(x + ', ' + i);
+            draw(x, i, this);
+            drawn++;
+        }
+        // mark left
+        drawn = 0;
+        for(var i = x-1; i >= 0 && drawn < 3; i--){
+            // console.log(i + ', ' + y);
+            draw(i, y, this);
+            drawn++;
+        }
+        // mark right
+        drawn = 0;
+        for(var i = x+1; i < this.fieldsNumber && drawn < 3; i++){
+            // console.log(i + ', ' + y);
+            draw(i, y, this);
+            drawn++;
+        }
+        // console.log('---------------');
+        this.drawPlayer(this.getSecondPlayer());
+    }
+
     blockField(x, y){
-        this.boardCanvasContext.fillRect(
-            x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
-            y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
+        let image = this.game.ui.icons.wall;
+        this.boardCanvasContext.drawImage(
+            image,
+            x * this.fieldSize + this.boardCanvasContext.lineWidth,
+            y * this.fieldSize + this.boardCanvasContext.lineWidth,
             this.fieldSize,
             this.fieldSize
         );
@@ -306,7 +442,8 @@ class Board{
 
         this.game.drawStatuses();
 
-        // draw rect
+        // draw rect just to cover up the green highlighted fields
+        // this.boardCanvasContext.fillStyle = 'white';
         // this.boardCanvasContext.fillRect(
         //     pos_x * this.fieldSize + this.boardCanvasContext.lineWidth*1.5,
         //     pos_y * this.fieldSize + this.boardCanvasContext.lineWidth*1.5,

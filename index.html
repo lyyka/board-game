@@ -35,6 +35,7 @@
             <!-- board icons -->
             <img id = 'hp_potion' src = 'images/hp.png' alt = 'Health potion' />
             <img id = 'attack_power' src = 'images/ap.png' alt = 'Attack power' />
+            <img id = 'wall' src = 'images/wall.png' alt = 'Wall' />
         </div>
 
         <!-- setup modal -->
@@ -85,9 +86,6 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">Fight!</h5>
-                        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button> -->
                     </div>
                     <div class="modal-body">
                         <p class = 'p1-label'>Player 1, choose action:</p>
@@ -112,7 +110,6 @@
         </div>
 
         <!-- winning modal -->
-        <!-- fighting dialog -->
         <div class="modal fade" id="winDialog" tabindex="-1" role="dialog" aria-labelledby="winModal-title"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -130,11 +127,11 @@
             </div>
         </div>
 
-        <div class = 'container'>
+        <div class = 'container-fluid'>
             <h3 class = 'animated fadeInLeft'>Board game</h3>
             <div class = 'row'>
                 <!-- col for board and player statuses -->
-                <div class = 'col-xl-6 mb-4'>
+                <div class = 'col-lg-8 mb-4'>
                     <canvas id='board'></canvas>
                     <br/>
                     <h4 id = 'turn-indicator'></h4>
@@ -170,7 +167,7 @@
                     </div>
                 </div>
                 <!-- col for play and game time, game log, controls and option -->
-                <div class = 'col-xl-6 mb-4'>
+                <div class = 'col-lg-4 mb-4'>
                     <!-- play and game time -->
                     <div class = 'animated fadeInRight p-4 border rounded shadow-sm mb-2'>
                         <button type = 'button' id = 'start-game' class = 'animated fadeInRight btn btn-success'>
@@ -230,14 +227,14 @@
                                 <span class = 'text-muted'>*Changes will apply on next game you start</span>
                             </div>
                             <div class='col-md-6 cb-col-resp'>
-                                <input type="checkbox" class="apple-switch" id = 'dead-fields'>
+                                <input type="checkbox" class="apple-switch" checked id = 'dead-fields'>
                             </div>
                         </div>
-                        <hr/>
                     </div>
                 </div>
             </div>
             <hr/>
+            <!-- footer -->
             <p class = 'text-center'>
                 <span class="fas fa-code"></span>
                 with
