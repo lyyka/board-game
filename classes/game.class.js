@@ -2,11 +2,12 @@ class Game{
 
     // constructs new game
     // initializes new message logger for this game and creates new board
-    constructor() {
+    constructor(options={}) {
         this.log = new Logger();
         this.board = new Board(64, 8, this);
         this.ui = new UI();
         this.powerUpInterval = undefined;
+        this.options = options; // will be set on startGame() in init
     }
 
     // happens when game starts
@@ -23,14 +24,19 @@ class Game{
 
         // turn is 1 by default
         this.turn = 1;
-        
+
         // logs turn
         this.log.logTurn(this);
 
         // set interval to generate power ups on fields
         this.doTheFight = this.doTheFight.bind(this);
         this.generatePowerUp = this.generatePowerUp.bind(this);
-        this.powerUpInterval = setInterval(this.generatePowerUp, 2000);
+        const time = this.options.fasterPowerups ? 1200 : 2000; // time based on options
+        this.powerUpInterval = setInterval(this.generatePowerUp, time);
+
+        if(this.options.deadFields){
+            this.blockFields();
+        };
     }
 
     drawStatuses(){
@@ -45,12 +51,20 @@ class Game{
         this.ui.playerStatuses.wrap.classList.remove('d-none');
 
         // first player
-        this.ui.playerStatuses.player1.image.appendChild(this.player1.image);
+        const p1_img_el = document.createElement('img');
+        p1_img_el.src = this.player1.image.src;
+        p1_img_el.width = 64;
+        p1_img_el.classList.add('img-fluid');
+        this.ui.playerStatuses.player1.image.appendChild(p1_img_el);
         this.ui.playerStatuses.player1.hp.innerText = "HP: " + this.player1.hp;
         this.ui.playerStatuses.player1.ap.innerText = "Attack power: " + this.player1.attack_power;
 
         // second player
-        this.ui.playerStatuses.player2.image.appendChild(this.player2.image);
+        const p2_img_el = document.createElement('img');
+        p2_img_el.src = this.player2.image.src;
+        p2_img_el.width = 64;
+        p2_img_el.classList.add('img-fluid');
+        this.ui.playerStatuses.player2.image.appendChild(p2_img_el);
         this.ui.playerStatuses.player2.hp.innerText = "HP: " + this.player2.hp;
         this.ui.playerStatuses.player2.ap.innerText = "Attack power: " + this.player2.attack_power;
     }
@@ -71,7 +85,7 @@ class Game{
     end(winnerInfo){
         // hide fight modal
         this.ui.fightingModal.modal("hide");
-        
+
         // show winning player on modal
         this.ui.showWinningModal(winnerInfo);
         this.clearEverything();
@@ -99,15 +113,14 @@ class Game{
         const decisions = this.ui.getPlayersDecisions();
         let game_end = false;
         let winnerInfo = undefined;
-
         if(decisions.player1 == 'attack'){
             let damage = undefined;
             if(decisions.player2 == 'defend'){
-                damage = this.player1.attack_power / 2;
+                damage = this.options.oneShotGame ? this.player2.hp : this.player1.attack_power / 2;
                 this.player2.hp -= damage;
             }
             else{
-                damage = this.player1.attack_power;
+                damage = this.options.oneShotGame ? this.player2.hp : this.player1.attack_power;
                 this.player2.hp -= damage;
             }
             this.log.logMessage('Player 1 dealt ' + damage + 'DMG to Player 2');
@@ -123,11 +136,11 @@ class Game{
         if(decisions.player2 == 'attack' && !game_end){
             let damage = undefined;
             if (decisions.player1 == 'defend') {
-                damage = this.player2.attack_power / 2;
+                damage = this.options.oneShotGame ? this.player1.hp : this.player2.attack_power / 2;
                 this.player1.hp -= damage;
             }
             else {
-                damage = this.player2.attack_power;
+                damage = this.options.oneShotGame ? this.player1.hp : this.player2.attack_power;
                 this.player1.hp -= damage;
             }
             this.log.logMessage('Player 2 dealt ' + damage + 'DMG to Player 1');
@@ -140,7 +153,7 @@ class Game{
                 };
             }
         }
-        
+
         if(game_end){
             this.end(winnerInfo);
         }
@@ -148,12 +161,13 @@ class Game{
             this.board.movePlayer(this.player1, {
                 x: 1,
                 y: 1
-            }, true)
+            }, true);
 
             this.board.movePlayer(this.player2, {
                 x: this.board.fieldsNumber,
                 y: this.board.fieldsNumber
-            }, true)
+            }, true);
+
             this.ui.fightingModal.modal("hide");
             this.unblockKeyboard();
         }
@@ -166,12 +180,14 @@ class Game{
             while(loop){
                 const rand_x = Math.floor(Math.random() * Math.floor(this.board.fieldsNumber));
                 const rand_y = Math.floor(Math.random() * Math.floor(this.board.fieldsNumber));
-                console.log(this.player1);
-                console.log(rand_x + ', ' + rand_y);
+
+                // get random field
+                const field = this.board.fields[rand_x][rand_y];
+
                 // see if power up does not overlap with player or with another power up
                 if (rand_x + 1 != this.player1.position.x && rand_x + 1 != this.player2.position.x &&
                     rand_y + 1 != this.player1.position.y && rand_y + 1 != this.player2.position.y &&
-                    this.board.fields[rand_x][rand_y].power_up == undefined) {
+                    field.power_up == undefined && !field.dead) {
 
                     loop = false;
 
@@ -184,16 +200,38 @@ class Game{
                     // random index
                     const power_up_index = Math.floor(Math.random() * Math.floor(power_ups.length));
 
-                    // get random field
-                    const field = this.board.fields[rand_x][rand_y];
-
                     // add power up to field
                     field.addPowerUp(power_ups[power_up_index]);
                 }
             }
         }
     }
-    
+
+    blockFields(){
+        // you can only generate SQRT(fields_number) + 1 number of power ups on board
+        for(var i = 0; i <= Math.sqrt(this.board.fieldsNumber) + 1; i++){
+            let loop = true;
+            while(loop){
+                const rand_x = Math.floor(Math.random() * Math.floor(this.board.fieldsNumber));
+                const rand_y = Math.floor(Math.random() * Math.floor(this.board.fieldsNumber));
+
+                // get random field
+                const field = this.board.fields[rand_x][rand_y];
+
+                // see if power up does not overlap with player or with another power up
+                if (rand_x + 1 != this.player1.position.x && rand_x + 1 != this.player2.position.x &&
+                    rand_y + 1 != this.player1.position.y && rand_y + 1 != this.player2.position.y &&
+                    field.power_up == undefined && !field.dead) {
+
+                    loop = false;
+
+                    // block field
+                    field.block();
+                }
+            }
+        }
+    }
+
     changeTurn(){
         if(this.turn == 1){
             this.turn = 2;

@@ -120,6 +120,8 @@ class Board{
     movePlayer(player, pos, forceMove = false){
         const x = pos.x;
         const y = pos.y;
+        // console.log(player);
+        // console.log('above should move to ' + x + ', ' + y);
 
         // set player based on turn
         let move_distance = 100;
@@ -127,13 +129,12 @@ class Board{
         // calc players move distance
         move_distance = Math.abs(Math.pow(player.position.x - x, 2) + Math.pow(player.position.y - y, 2));
         if (player != undefined) {
-            console.log("Move distance: " + move_distance);
-            if ((move_distance > 2 || move_distance == 0 || x > this.fieldsNumber || y > this.fieldsNumber || x <= 0 || y <= 0) && !forceMove) {
+            if ((move_distance > 2 || move_distance == 0 || x > this.fieldsNumber || y > this.fieldsNumber || x <= 0 || y <= 0 || this.fields[x-1][y-1].dead) && !forceMove) {
                 // move distance greater than 2, or on the same spot
-                alert('You can only move to fields around you and in board');
+                alert('You can only move to fields around you, in board and not blocked ones.');
             }
             else {
-                const other_player = this.getSecondPlayer(); 
+                const other_player = this.getSecondPlayer();
                 if(other_player.position.x == x && other_player.position.y == y){
                     // players collided, don't draw one on top of another
                     this.game.displayFightingDialog();
@@ -255,6 +256,15 @@ class Board{
                 this.fieldSize
             );
         }
+    }
+
+    blockField(x, y){
+        this.boardCanvasContext.fillRect(
+            x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
+            y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
+            this.fieldSize,
+            this.fieldSize
+        );
     }
 
     clearCurrentPlayer(){

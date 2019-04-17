@@ -133,6 +133,7 @@
         <div class = 'container'>
             <h3 class = 'animated fadeInLeft'>Board game</h3>
             <div class = 'row'>
+                <!-- col for board and player statuses -->
                 <div class = 'col-xl-6 mb-4'>
                     <canvas id='board'></canvas>
                     <br/>
@@ -142,7 +143,7 @@
                         <div class = 'p-4 rounded shadow-sm border mb-2'>
                             <div class = 'row'>
                                 <div class = 'col-md-6' id = 'p1-status-image'>
-                                    
+
                                 </div>
                                 <div class = 'col-md-6'>
                                     <p id = 'p1-status-label'><strong>Player 1</strong></p>
@@ -168,12 +169,22 @@
                         </div>
                     </div>
                 </div>
+                <!-- col for play and game time, game log, controls and option -->
                 <div class = 'col-xl-6 mb-4'>
+                    <!-- play and game time -->
+                    <div class = 'animated fadeInRight p-4 border rounded shadow-sm mb-2'>
+                        <button type = 'button' id = 'start-game' class = 'animated fadeInRight btn btn-success'>
+                            <i class="far fa-play-circle"></i>
+                            Start
+                        </button>
+                    </div>
+                    <!-- game log -->
                     <div class = 'animated fadeInRight p-4 border rounded shadow-sm mb-2'>
                         <h4>Game log</h4>
                         <hr/>
                         <div id = 'game-log'></div>
                     </div>
+                    <!-- control -->
                     <div class = 'animated fadeInRight p-4 border rounded shadow-sm mb-2'>
                         <h4>Controls</h4><hr/>
                         <p>
@@ -188,40 +199,44 @@
                             Click on fields using <strong>left mouse click</strong>
                         </p>
                     </div>
-                    <div class='animated fadeInRight p-4 border rounded shadow-sm bg-secondary text-white'>
-                        <h4>Options (not working yet)</h4><hr/>
+                    <!-- options -->
+                    <div class = 'animated fadeInRight p-4 border rounded shadow-sm mb-2'>
+                        <h4>Options</h4>
+                        <hr/>
                         <div class = 'row mb-2'>
                             <div class = 'col-md-6'>
                                 Faster appear power ups
+                                <br/>
+                                <span class = 'text-muted'>*Changes will apply on next game you start</span>
                             </div>
                             <div class='col-md-6 cb-col-resp'>
-                                <label class="switch" for="faster-powerups">
-                                    <input type="checkbox" id="faster-powerups" />
-                                    <div class="slider round"></div>
-                                </label>
+                                <input type="checkbox" class="apple-switch" id = 'faster-powerups'>
                             </div>
                         </div>
-
+                        <hr/>
                         <div class='row mb-2'>
                             <div class='col-md-6'>
-                                One-shot game
+                                <span>One-shot game</span>
                             </div>
                             <div class='col-md-6 cb-col-resp'>
-                                <label class="switch" for="one-shot-game">
-                                    <input type="checkbox" id="one-shot-game" />
-                                    <div class="slider round"></div>
-                                </label>
+                                <input type="checkbox" class="apple-switch" id = 'one-shot-game'>
                             </div>
                         </div>
-                        
+                        <hr/>
+                        <div class='row mb-2'>
+                            <div class='col-md-6'>
+                                Dead fields
+                                <br/>
+                                <span class = 'text-muted'>*Changes will apply on next game you start</span>
+                            </div>
+                            <div class='col-md-6 cb-col-resp'>
+                                <input type="checkbox" class="apple-switch" id = 'dead-fields'>
+                            </div>
+                        </div>
+                        <hr/>
                     </div>
                 </div>
             </div>
-            <hr/>
-            <button type = 'button' id = 'start-game' class = 'animated fadeInLeft btn btn-success'>
-                <i class="far fa-play-circle"></i>
-                Start
-            </button>
             <hr/>
             <p class = 'text-center'>
                 <span class="fas fa-code"></span>
@@ -261,111 +276,6 @@
         <!-- game class (holds first two) -->
         <script src="classes/game.class.js"></script>
         <!-- init -->
-        <script>
-            let current_game = undefined;
-            let player1_image = undefined;
-            let player2_image = undefined;
-
-            (function(){
-                // just disable scroll on arrow keys due to game controls
-                window.addEventListener("keydown", function (e) {
-                    // space and arrow keys
-                    if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
-                        e.preventDefault();
-                    }
-                }, false);
-
-                // binds on click listener to green start button
-                document.getElementById('start-game').onclick = setup;
-            })();
-
-            function setup(){
-                if(current_game != undefined){
-                    current_game.clearEverything();
-                    current_game = undefined;
-                }
-                const player_chars = document.getElementsByClassName('player-character');
-                for(var i = 0; i < player_chars.length; i++){
-                    player_chars[i].onclick = onImageClick;
-                }
-                // show modal to choose colors and characters
-                $("#gameSetup").modal({
-                    backdrop: 'static',
-                    keyboard: false
-                });
-
-                document.getElementById('start-game-final').addEventListener('click', preStart, {
-                    once: true
-                });
-            }
-
-            function onImageClick(e){
-                // get clicked image
-                let target = e.target || e.srcElement;
-                // get data-player attribute of the image so we know which image is for which player
-                let for_player = target.getAttribute('data-player');
-                let all_images = undefined;
-                if (for_player == 1) {
-                    player1_image = target;
-                    all_images = document.getElementsByClassName('pc-1');
-                }
-                if (for_player == 2) {
-                    player2_image = target;
-                    all_images = document.getElementsByClassName('pc-2');
-                }
-                if(all_images != undefined){
-                    // remove active class from all images so only this one remains selected
-                    for (var i = 0; i < all_images.length; i++) {
-                        const image = all_images[i];
-                        image.classList.remove('active');
-                    }
-                }
-                // add active to this image
-                target.classList.add('active');
-            }
-
-            function preStart(){
-                if(player1_image != undefined && player2_image != undefined){
-                    $("#gameSetup").modal('hide');
-                    startGame(player1_image, player2_image);
-                }
-                else{
-                    alert('Both players should choose a character first!');
-                }
-            }
-
-            function startGame(p1_image, p2_image){
-                // create new game, this will also create a board object inside game and draw it
-                const game = new Game();
-                current_game = game;
-
-                // remove active class from image elements
-                p1_image.classList.remove('active', 'player-character');
-                p2_image.classList.remove('active', 'player-character');
-                // create players
-                const player1 = new Player(30, 150, p1_image, game);
-                const player2 = new Player(30, 150, p2_image, game);
-
-                // assign players default positions
-                player1.setPosition(1, 1);
-                player2.setPosition(game.board.fieldsNumber, game.board.fieldsNumber);
-
-                // assign players to game
-                game.player1 = player1;
-                game.player2 = player2;
-
-                // draw players
-                game.board.drawPlayer(player1)
-                game.board.drawPlayer(player2);
-
-                // set player statuses
-                game.drawStatuses();
-                
-
-                // start game
-                game.start();
-            }
-
-        </script>
+        <script src ="scripts/init.js"></script>
     </body>
 </html>
