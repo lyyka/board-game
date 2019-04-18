@@ -26,97 +26,70 @@ class Board{
         document.body.addEventListener('keydown', this.onKeyDown);
     }
 
+    // keyboard controls
     onKeyDown(e){
         if(this.game.keyboard){
             var keyCode = e.keyCode;
+            let move_to = undefined;
             if (this.game.turn == 1) {
+                // decide where to move
                 switch (keyCode) {
                     case 68: //d
-                        this.movePlayer(
-                            this.getActivePlayer(),
-                            {
-                                x: this.getActivePlayer().position.x + 1,
-                                y: this.getActivePlayer().position.y
-                            }
-                        );
+                        move_to = { x: this.getActivePlayer().position.x + 1,
+                                y: this.getActivePlayer().position.y };
                         break;
                     case 83: //s
-                        this.movePlayer(
-                            this.getActivePlayer(),
-                            {
-                                x: this.getActivePlayer().position.x,
-                                y: this.getActivePlayer().position.y + 1
-                            }
-                        );
+                        move_to = { x: this.getActivePlayer().position.x,
+                                y: this.getActivePlayer().position.y + 1 };
                         break;
                     case 65: //a
-                        this.movePlayer(
-                            this.getActivePlayer(),
-                            {
-                                x: this.getActivePlayer().position.x - 1,
-                                y: this.getActivePlayer().position.y
-                            }
-                        );
+                        move_to = { x: this.getActivePlayer().position.x - 1,
+                                y: this.getActivePlayer().position.y };
                         break;
                     case 87: //w
-                        this.movePlayer(
-                            this.getActivePlayer(),
-                            {
-                                x: this.getActivePlayer().position.x,
-                                y: this.getActivePlayer().position.y - 1
-                            }
-                        );
+                        move_to = { x: this.getActivePlayer().position.x,
+                                y: this.getActivePlayer().position.y - 1 };
                         break;
                 }
             }
             else if (this.game.turn == 2) {
+                // decide where to move
                 switch (keyCode) {
                     case 39: //d
-                        this.movePlayer(
-                            this.getActivePlayer(),
-                            {
-                                x: this.getActivePlayer().position.x + 1,
-                                y: this.getActivePlayer().position.y
-                            }
-                        );
+                        move_to = { x: this.getActivePlayer().position.x + 1,
+                                    y: this.getActivePlayer().position.y };
                         break;
                     case 40: //s
-                        this.movePlayer(
-                            this.getActivePlayer(),
-                            {
-                                x: this.getActivePlayer().position.x,
-                                y: this.getActivePlayer().position.y + 1
-                            }
-                        );
+                        move_to = { x: this.getActivePlayer().position.x,
+                                y: this.getActivePlayer().position.y + 1 };
                         break;
                     case 37: //a
-                        this.movePlayer(
-                            this.getActivePlayer(),
-                            {
-                                x: this.getActivePlayer().position.x - 1,
-                                y: this.getActivePlayer().position.y
-                            }
-                        );
+                        move_to = { x: this.getActivePlayer().position.x - 1,
+                                y: this.getActivePlayer().position.y };
                         break;
                     case 38: //w
-                        this.movePlayer(
-                            this.getActivePlayer(),
-                            {
-                                x: this.getActivePlayer().position.x,
-                                y: this.getActivePlayer().position.y - 1
-                            }
-                        );
+                        move_to = { x: this.getActivePlayer().position.x,
+                                y: this.getActivePlayer().position.y - 1 };
                         break;
                 }
+            }
+            // move if control clicked
+            if(move_to != undefined){
+                this.movePlayer(
+                    this.getActivePlayer(),
+                    move_to
+                );
             }
         }
     }
 
+    // on click
     onClick(e){
         const pos = this.getPositionSquare(e);
         this.movePlayer(this.getActivePlayer(), pos);
     }
 
+    // moves player
     movePlayer(player, pos, forceMove = false){
         const x = pos.x;
         const y = pos.y;
@@ -127,43 +100,41 @@ class Board{
         let move_distance = 100;
 
         // calc players move distance
-        move_distance = Math.abs(Math.pow(player.position.x - x, 2) + Math.pow(player.position.y - y, 2));
-        if (player != undefined) {
-            if ((move_distance > 1 || move_distance == 0 || x > this.fieldsNumber || y > this.fieldsNumber || x <= 0 || y <= 0 || this.fields[x-1][y-1].dead) && !forceMove) {
-                // move distance greater than 2, or on the same spot
-                alert('You can only move to highlighted fields');
+        move_distance = Math.sqrt(Math.pow(player.position.x - x, 2) + Math.pow(player.position.y - y, 2));
+        if((move_distance > 0 && move_distance <= player.maxMoveDistance && (x == player.position.x || y == player.position.y) && (x > 0 && x <= this.fieldsNumber) && (y > 0 && y <= this.fieldsNumber) && !this.fields[x-1][y-1].dead) || forceMove) {
+            // clear available fields for current player
+            this.clearAvailableFields();
+            // see if there is a fight
+            const other_player = this.getSecondPlayer();
+            if(other_player.position.x == x && other_player.position.y == y){
+                // players collided, don't draw one on top of another
+                this.game.displayFightingDialog();
             }
-            else {
-                this.clearAvailableFields();
-                const other_player = this.getSecondPlayer();
-                if(other_player.position.x == x && other_player.position.y == y){
-                    // players collided, don't draw one on top of another
-                    this.game.displayFightingDialog();
+            else{
+                // clear current player from his position
+                this.clearRect(player.position.x, player.position.y);
+
+                // update players position
+                player.updatePlayerPosition(x, y);
+
+                if (this.fields[x - 1][y - 1].power_up != undefined) {
+                    const power_up = this.fields[x - 1][y - 1].power_up;
+                    this.fields[x - 1][y - 1].power_up = undefined;
+                    this.clearRect(x, y);
+
+                    player.applyPowerup(power_up);
                 }
-                else{
-                    // clear current player from his position
-                    this.clearCurrentPlayer();
 
-                    // update players position
-                    player.updatePlayerPosition(x, y);
+                // draw player again
+                this.drawPlayer(player);
 
-                    if (this.fields[x - 1][y - 1].power_up != undefined) {
-                        const power_up = this.fields[x - 1][y - 1].power_up;
-                        this.fields[x - 1][y - 1].power_up = undefined;
-
-                        player[power_up] += 10;
-                    }
-
-                    // draw player again
-                    this.drawPlayer(player);
-
-                    // change turns in game
-                    this.game.changeTurn();
-                }
+                // change turns in game
+                this.game.changeTurn();
             }
         }
     }
 
+    // gets the player currently on turn
     getActivePlayer(){
         let player = undefined;
         if (this.game.turn == 1) {
@@ -175,6 +146,7 @@ class Board{
         return player;
     }
 
+    // gets player that is NOT active
     getSecondPlayer(){
         let player = undefined;
         if (this.game.turn == 1) {
@@ -186,6 +158,7 @@ class Board{
         return player;
     }
 
+    // returns number of power ups currently on board
     countPowerUps(){
         let number = 0;
         for(var i = 0; i < this.fields.length; i++){
@@ -200,6 +173,7 @@ class Board{
         return number;
     }
 
+    // get coordinates of square based on x,y coordinates from MOUSE EVENT
     getPositionSquare(e){
         const x_offset = e.offsetX;
         const y_offset = e.offsetY;
@@ -213,6 +187,7 @@ class Board{
         }
     }
 
+    // draws the board and stores board fields in an array
     drawBoard() {
         // black borders
         this.boardCanvasContext.strokeStyle = 'black';
@@ -236,6 +211,7 @@ class Board{
         this.boardCanvasContext.stroke();
     }
 
+    // destroys the board, clears canvas, clears all event listeners
     destroy(){
         // clear canvas
         this.boardCanvasContext.clearRect(0, 0, this.boardCanvasEl.width, this.boardCanvasEl.height);
@@ -244,6 +220,7 @@ class Board{
         document.body.removeEventListener('keydown', this.onKeyDown);
     }
 
+    // draws a power up image on x,y field
     drawPowerUp(x, y, power_up){
         let image = this.game.ui.icons[power_up];
 
@@ -258,48 +235,39 @@ class Board{
         }
     }
 
-    // redrawPowerups(){
-    //     for(var i = 0; i < this.fields.length; i++){
-    //         for(var y = 0; y < this.fields.length; y++){
-    //             this.drawPowerUp(i, y, this.fields[i][y].power_up);
-    //         }
-    //     }
-    // }
-
+    // draws available fields for current player
     drawAvailableFields(){
-
-        this.currentlyAvailableFields = [];
 
         const draw = (x, y, board) => {
             if(!board.fields[x][y].dead){
-                board.currentlyAvailableFields.push({
-                    x: x,
-                    y: y
-                });
-
-                const other_player = this.getSecondPlayer();
+                const other_player = board.getSecondPlayer();
                 // other player draw-over
                 let draw_over = false;
                 if(other_player.position.x-1 == x && other_player.position.y-1 == y){
                     board.boardCanvasContext.fillStyle = '#f44141';
                     draw_over = true;
                 }
+                else if(board.fields[x][y].power_up != undefined){
+                    board.boardCanvasContext.fillStyle = '#f1f441';
+                }
                 else{
                     board.boardCanvasContext.fillStyle = '#65f442';
                 }
 
                 board.boardCanvasContext.fillRect(
-                    x * this.fieldSize + 1.5*board.boardCanvasContext.lineWidth,
-                    y * this.fieldSize + 1.5*board.boardCanvasContext.lineWidth,
+                    x * board.fieldSize + 1.5*board.boardCanvasContext.lineWidth,
+                    y * board.fieldSize + 1.5*board.boardCanvasContext.lineWidth,
                     board.fieldSize - 1.1*board.boardCanvasContext.lineWidth,
                     board.fieldSize - 1.1*board.boardCanvasContext.lineWidth
                 );
 
+                // if it was drawn over the player, draw that player again
                 if(draw_over){
-                    this.drawPlayer(other_player);
+                    board.drawPlayer(other_player);
                 }
-                if(this.fields[x][y].power_up != undefined){
-                    this.drawPowerUp(x, y , this.fields[x][y].power_up);
+                // if it was drawn over power up, draw the power up again
+                if(board.fields[x][y].power_up != undefined){
+                    board.drawPowerUp(x, y , board.fields[x][y].power_up);
                 }
 
             }
@@ -310,49 +278,47 @@ class Board{
         let y = player.position.y-1; // start from 0
         // mark up
         let drawn = 0;
-        for(var i = y-1; i >= 0 && drawn < 3 && !this.fields[x][i].dead; i--){
+        for(var i = y-1; i >= 0 && drawn < player.maxMoveDistance && !this.fields[x][i].dead; i--){
             // console.log(x + ', ' + i);
             draw(x, i, this);
             drawn++;
         }
         // mark down
         drawn = 0;
-        for(var i = y+1; i < this.fieldsNumber && drawn < 3 && !this.fields[x][i].dead; i++){
+        for(var i = y+1; i < this.fieldsNumber && drawn < player.maxMoveDistance && !this.fields[x][i].dead; i++){
             // console.log(x + ', ' + i);
             draw(x, i, this);
             drawn++;
         }
         // mark left
         drawn = 0;
-        for(var i = x-1; i >= 0 && drawn < 3 && !this.fields[i][y].dead; i--){
+        for(var i = x-1; i >= 0 && drawn < player.maxMoveDistance && !this.fields[i][y].dead; i--){
             // console.log(i + ', ' + y);
             draw(i, y, this);
             drawn++;
         }
         // mark right
         drawn = 0;
-        for(var i = x+1; i < this.fieldsNumber && drawn < 3 && !this.fields[i][y].dead; i++){
+        for(var i = x+1; i < this.fieldsNumber && drawn < player.maxMoveDistance && !this.fields[i][y].dead; i++){
             // console.log(i + ', ' + y);
             draw(i, y, this);
             drawn++;
         }
         // console.log('---------------');
-
-        // this.redrawPowerups();
     }
 
+    // clears all available fields
     clearAvailableFields(){
-        const draw = (x, y, board) => {
-            if(!this.fields[x][y].dead){
-                board.boardCanvasContext.fillStyle = 'white';
-                board.boardCanvasContext.fillRect(
-                    x * this.fieldSize + 1.5*board.boardCanvasContext.lineWidth,
-                    y * this.fieldSize + 1.5*board.boardCanvasContext.lineWidth,
+        const clear = (x, y, board) => {
+            if(!board.fields[x][y].dead){
+                board.boardCanvasContext.clearRect(
+                    x * board.fieldSize + 1.5*board.boardCanvasContext.lineWidth,
+                    y * board.fieldSize + 1.5*board.boardCanvasContext.lineWidth,
                     board.fieldSize - 1.1*board.boardCanvasContext.lineWidth,
                     board.fieldSize - 1.1*board.boardCanvasContext.lineWidth
                 );
-                if(this.fields[x][y].power_up != undefined){
-                    this.drawPowerUp(x, y , this.fields[x][y].power_up);
+                if(board.fields[x][y].power_up != undefined){
+                    board.drawPowerUp(x, y , board.fields[x][y].power_up);
                 }
             }
         };
@@ -362,36 +328,37 @@ class Board{
         let y = player.position.y-1; // start from 0
         // mark up
         let drawn = 0;
-        for(var i = y-1; i >= 0 && drawn < 3; i--){
+        for(var i = y-1; i >= 0 && drawn < player.maxMoveDistance; i--){
             // console.log(x + ', ' + i);
-            draw(x, i, this);
+            clear(x, i, this);
             drawn++;
         }
         // mark down
         drawn = 0;
-        for(var i = y+1; i < this.fieldsNumber && drawn < 3; i++){
+        for(var i = y+1; i < this.fieldsNumber && drawn < player.maxMoveDistance; i++){
             // console.log(x + ', ' + i);
-            draw(x, i, this);
+            clear(x, i, this);
             drawn++;
         }
         // mark left
         drawn = 0;
-        for(var i = x-1; i >= 0 && drawn < 3; i--){
+        for(var i = x-1; i >= 0 && drawn < player.maxMoveDistance; i--){
             // console.log(i + ', ' + y);
-            draw(i, y, this);
+            clear(i, y, this);
             drawn++;
         }
         // mark right
         drawn = 0;
-        for(var i = x+1; i < this.fieldsNumber && drawn < 3; i++){
+        for(var i = x+1; i < this.fieldsNumber && drawn < player.maxMoveDistance; i++){
             // console.log(i + ', ' + y);
-            draw(i, y, this);
+            clear(i, y, this);
             drawn++;
         }
         // console.log('---------------');
         this.drawPlayer(this.getSecondPlayer());
     }
 
+    // places a wall image on a field
     blockField(x, y){
         let image = this.game.ui.icons.wall;
         this.boardCanvasContext.drawImage(
@@ -403,27 +370,18 @@ class Board{
         );
     }
 
-    clearCurrentPlayer(){
-        // set current active player
-        let player = undefined;
-        if(this.game.turn == 1){
-            player = this.game.player1.position;
-        }
-        else if(this.game.turn == 2){
-            player = this.game.player2.position;
-        }
-
-        if(player != undefined){
-            // clear current player
-            this.boardCanvasContext.clearRect(
-                (player.x - 1) * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
-                (player.y - 1) * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
-                this.fieldSize - this.boardCanvasContext.lineWidth,
-                this.fieldSize - this.boardCanvasContext.lineWidth
-            );
-        }
+    // clears player from his position
+    clearRect(x, y){
+        // clear current player
+        this.boardCanvasContext.clearRect(
+            (x - 1) * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
+            (y - 1) * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
+            this.fieldSize - this.boardCanvasContext.lineWidth,
+            this.fieldSize - this.boardCanvasContext.lineWidth
+        );
     }
 
+    // draws a player
     drawPlayer(player) {
         // get player position
         const pos_x = player.position.x - 1;
@@ -441,29 +399,6 @@ class Board{
         );
 
         this.game.drawStatuses();
-
-        // draw rect just to cover up the green highlighted fields
-        // this.boardCanvasContext.fillStyle = 'white';
-        // this.boardCanvasContext.fillRect(
-        //     pos_x * this.fieldSize + this.boardCanvasContext.lineWidth*1.5,
-        //     pos_y * this.fieldSize + this.boardCanvasContext.lineWidth*1.5,
-        //     this.fieldSize - this.boardCanvasContext.lineWidth,
-        //     this.fieldSize - this.boardCanvasContext.lineWidth
-        // );
-
-        // add text over player for his HP and AP
-        // this.boardCanvasContext.font = '15px Arial';
-        // this.boardCanvasContext.fillStyle = 'black';
-        // this.boardCanvasContext.fillText(
-        //     player.hp + 'HP',
-        //     pos_x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
-        //     pos_y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 - 30,
-        // );
-        // this.boardCanvasContext.fillText(
-        //     player.attack_power + 'AP',
-        //     pos_x * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5,
-        //     pos_y * this.fieldSize + this.boardCanvasContext.lineWidth * 1.5 - 15,
-        // );
     }
 
 }

@@ -59,6 +59,7 @@ class Game{
         this.ui.playerStatuses.player1.image.appendChild(p1_img_el);
         this.ui.playerStatuses.player1.hp.innerText = "HP: " + this.player1.hp;
         this.ui.playerStatuses.player1.ap.innerText = "Attack power: " + this.player1.attack_power;
+        this.ui.playerStatuses.player1.crit_damage.innerText = "Critical damage: " + (this.player1.crit_damage * 100) + "%";
 
         // second player
         const p2_img_el = document.createElement('img');
@@ -68,6 +69,7 @@ class Game{
         this.ui.playerStatuses.player2.image.appendChild(p2_img_el);
         this.ui.playerStatuses.player2.hp.innerText = "HP: " + this.player2.hp;
         this.ui.playerStatuses.player2.ap.innerText = "Attack power: " + this.player2.attack_power;
+        this.ui.playerStatuses.player2.crit_damage.innerText = "Critical damage: " + (this.player2.crit_damage * 100) + "%";
     }
 
     clearEverything(){
@@ -95,6 +97,7 @@ class Game{
     unblockKeyboard(){
         this.keyboard = true;
     }
+
     blockKeyboard(){
         this.keyboard = false;
     }
@@ -195,7 +198,10 @@ class Game{
                     // available power ups
                     const power_ups = [
                         'hp',
-                        'attack_power'
+                        'hp_adv',
+                        'attack_power',
+                        'attack_power_adv',
+                        'crit_damage'
                     ];
 
                     // random index

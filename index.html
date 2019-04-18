@@ -23,9 +23,10 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
         <!-- this -->
         <link rel="stylesheet" href="styles/index.css" />
+        <link rel="stylesheet" href="styles/colors.css" />
 
     </head>
-    <body>
+    <body class = 'dm-bg-darken'>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -34,7 +35,10 @@
         <div style = 'position: absolute; top: -9999px; left: -9999px;'>
             <!-- board icons -->
             <img id = 'hp_potion' src = 'images/hp.png' alt = 'Health potion' />
+            <img id = 'hp_potion_adv' src = 'images/hp_adv.png' alt = 'Health potion advanced' />
             <img id = 'attack_power' src = 'images/ap.png' alt = 'Attack power' />
+            <img id = 'attack_power_adv' src = 'images/ap_adv.png' alt = 'Attack power advanced' />
+            <img id = 'crit_damage' src = 'images/crit_damage.png' alt = 'Critical damage' />
             <img id = 'wall' src = 'images/wall.png' alt = 'Wall' />
         </div>
 
@@ -128,13 +132,13 @@
         </div>
 
         <div class = 'container-fluid'>
-            <h3 class = 'animated fadeInLeft'>Board game</h3>
+            <h3 class = 'animated fadeInLeft dm-text-lighten'>Board game</h3>
             <div class = 'row'>
                 <!-- col for board and player statuses -->
                 <div class = 'col-lg-8 mb-4'>
                     <canvas id='board'></canvas>
                     <br/>
-                    <h4 id = 'turn-indicator'></h4>
+                    <h4 class = 'dm-text-lighten' id = 'turn-indicator'></h4>
                     <div id = 'player-status-wrapper' class = 'd-none'>
                         <!-- player 1 status -->
                         <div class = 'p-4 rounded shadow-sm border mb-2'>
@@ -143,10 +147,11 @@
 
                                 </div>
                                 <div class = 'col-md-6'>
-                                    <p id = 'p1-status-label'><strong>Player 1</strong></p>
-                                    <hr/>
-                                    <p id = 'p1-status-hp'></p>
-                                    <p id = 'p1-status-ap'></p>
+                                    <p class = 'dm-text-lighten' id = 'p1-status-label'><strong>Player 1</strong></p>
+                                    <hr class = 'dm-bg-lighten' />
+                                    <p class = 'dm-text-lighten' id = 'p1-status-hp'></p>
+                                    <p class = 'dm-text-lighten' id = 'p1-status-ap'></p>
+                                    <p class = 'dm-text-lighten' id = 'p1-status-crit-damage'></p>
                                 </div>
                             </div>
                         </div>
@@ -157,33 +162,34 @@
 
                                 </div>
                                 <div class='col-md-6'>
-                                    <p id='p2-status-label'><strong>Player 2</strong></p>
-                                    <hr/>
-                                    <p id='p2-status-hp'></p>
-                                    <p id='p2-status-ap'></p>
+                                    <p class = 'dm-text-lighten' id='p2-status-label'><strong>Player 2</strong></p>
+                                    <hr class = 'dm-bg-lighten' />
+                                    <p class = 'dm-text-lighten' id='p2-status-hp'></p>
+                                    <p class = 'dm-text-lighten' id='p2-status-ap'></p>
+                                    <p class = 'dm-text-lighten' id='p2-status-crit-damage'></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- col for play and game time, game log, controls and option -->
+                <!-- col for play, game log, controls and option -->
                 <div class = 'col-lg-4 mb-4'>
                     <!-- play and game time -->
-                    <div class = 'animated fadeInRight p-4 border rounded shadow-sm mb-2'>
+                    <div class = 'animated dm-bg-darken dm-text-lighten fadeInRight p-4 border rounded shadow-sm mb-2'>
                         <button type = 'button' id = 'start-game' class = 'animated fadeInRight btn btn-success'>
                             <i class="far fa-play-circle"></i>
                             Start
                         </button>
                     </div>
                     <!-- game log -->
-                    <div class = 'animated fadeInRight p-4 border rounded shadow-sm mb-2'>
+                    <div class = 'animated dm-bg-darken dm-text-lighten fadeInRight p-4 border rounded shadow-sm mb-2'>
                         <h4>Game log</h4>
-                        <hr/>
+                        <hr class = 'dm-bg-lighten' />
                         <div id = 'game-log'></div>
                     </div>
                     <!-- control -->
-                    <div class = 'animated fadeInRight p-4 border rounded shadow-sm mb-2'>
-                        <h4>Controls</h4><hr/>
+                    <div class = 'animated dm-bg-darken dm-text-lighten fadeInRight p-4 border rounded shadow-sm mb-2'>
+                        <h4>Controls</h4><hr class = 'dm-bg-lighten' />
                         <p>
                             <strong>WASD</strong> - move Player 1
                             <br/>
@@ -197,9 +203,9 @@
                         </p>
                     </div>
                     <!-- options -->
-                    <div class = 'animated fadeInRight p-4 border rounded shadow-sm mb-2'>
+                    <div class = 'animated dm-bg-darken dm-text-lighten fadeInRight p-4 border rounded shadow-sm mb-2'>
                         <h4>Options</h4>
-                        <hr/>
+                        <hr class = 'dm-bg-lighten' />
                         <div class = 'row mb-2'>
                             <div class = 'col-md-6'>
                                 Faster appear power ups
@@ -210,7 +216,7 @@
                                 <input type="checkbox" class="apple-switch" id = 'faster-powerups'>
                             </div>
                         </div>
-                        <hr/>
+                        <hr class = 'dm-bg-lighten' />
                         <div class='row mb-2'>
                             <div class='col-md-6'>
                                 <span>One-shot game</span>
@@ -219,10 +225,10 @@
                                 <input type="checkbox" class="apple-switch" id = 'one-shot-game'>
                             </div>
                         </div>
-                        <hr/>
+                        <hr class = 'dm-bg-lighten' />
                         <div class='row mb-2'>
                             <div class='col-md-6'>
-                                Dead fields
+                                <span>Dead fields</span>
                                 <br/>
                                 <span class = 'text-muted'>*Changes will apply on next game you start</span>
                             </div>
@@ -230,20 +236,29 @@
                                 <input type="checkbox" class="apple-switch" checked id = 'dead-fields'>
                             </div>
                         </div>
+                        <hr class = 'dm-bg-lighten' />
+                        <div class='row mb-2'>
+                            <div class='col-md-6'>
+                                <span>Dark mode</span>
+                            </div>
+                            <div class='col-md-6 cb-col-resp'>
+                                <input type="checkbox" class="apple-switch" id = 'dark-mode'>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <hr/>
+            <hr class = 'dm-bg-lighten' />
             <!-- footer -->
             <p class = 'text-center'>
-                <span class="fas fa-code"></span>
-                with
+                <span class="fas fa-code dm-text-lighten"></span>
+                <span class = 'dm-text-lighten'>with</span>
                 <span class="fas fa-heart" style="color:red;"></span>
-                by
+                <span class = 'dm-text-lighten'>by</span>
                 <a target="_blank" href="https://www.upwork.com/o/profiles/users/_~01770946482157855f/"
                     class="text-success">Luka Robajac</a>
                 <br />
-                <a class="text-dark" target="_blank" href="https://www.buymeacoffee.com/lyyka">Support the
+                <a class="cs-black-text dm-text-lighten" target="_blank" href="https://www.buymeacoffee.com/lyyka">Support the
                     developer <span class="fas fa-coffee"></span></a>
             </p>
         </div>
@@ -274,5 +289,9 @@
         <script src="classes/game.class.js"></script>
         <!-- init -->
         <script src ="scripts/init.js"></script>
+        <!-- block site on mobie -->
+        <script src ="scripts/mobile_block.js"></script>
+        <!-- dark mode -->
+        <script src ="scripts/dark_mode.js"></script>
     </body>
 </html>

@@ -1,0 +1,17 @@
+/* text */
+.cs-blue-text{
+    color: #121420;
+}
+.cs-orange-text{
+    color: #B76D68;
+}
+.cs-black-text{
+    color: black;
+}
+/* background */
+.cs-blue-bg{
+    background-color: #121420;
+}
+.cs-orange-bg{
+    background-color: #B76D68;
+}

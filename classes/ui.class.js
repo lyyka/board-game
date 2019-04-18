@@ -4,7 +4,10 @@ class UI{
         // icons
         this.icons = {
             hp: document.getElementById('hp_potion'),
+            hp_adv: document.getElementById('hp_potion_adv'),
             attack_power: document.getElementById('attack_power'),
+            attack_power_adv: document.getElementById('attack_power_adv'),
+            crit_damage: document.getElementById('crit_damage'),
             wall: document.getElementById('wall')
             // players: {
             //     batman: document.getElementById('player_batman'),
@@ -25,12 +28,14 @@ class UI{
                 label: document.getElementById('p1-status-label'),
                 hp: document.getElementById('p1-status-hp'),
                 ap: document.getElementById('p1-status-ap'),
+                crit_damage: document.getElementById('p1-status-crit-damage'),
             },
             player2: {
                 image: document.getElementById('p2-status-image'),
                 label: document.getElementById('p2-status-label'),
                 hp: document.getElementById('p2-status-hp'),
                 ap: document.getElementById('p2-status-ap'),
+                crit_damage: document.getElementById('p2-status-crit-damage'),
             }
         }
 
