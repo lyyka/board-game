@@ -48,7 +48,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Choose characters and colors</h5>
+                        <h5 class="modal-title" id="exampleModalLongTitle">Choose characters</h5>
                     </div>
                     <div class="modal-body">
                         <div id = 'p1-setup'>
@@ -135,51 +135,53 @@
             <h3 class = 'animated fadeInLeft dm-text-lighten'>Board game</h3>
             <div class = 'row'>
                 <!-- col for board and player statuses -->
-                <div class = 'col-lg-8 mb-4'>
+                <div class = 'col-lg-7 mb-4'>
                     <canvas id='board'></canvas>
                     <br/>
                     <h4 class = 'dm-text-lighten' id = 'turn-indicator'></h4>
-                    <div id = 'player-status-wrapper' class = 'd-none'>
+                    <div id = 'player-status-wrapper' class = 'd-none row'>
                         <!-- player 1 status -->
-                        <div class = 'p-4 rounded shadow-sm border mb-2'>
-                            <div class = 'row'>
-                                <div class = 'col-md-6' id = 'p1-status-image'>
-
-                                </div>
-                                <div class = 'col-md-6'>
-                                    <p class = 'dm-text-lighten' id = 'p1-status-label'><strong>Player 1</strong></p>
-                                    <hr class = 'dm-bg-lighten' />
-                                    <p class = 'dm-text-lighten' id = 'p1-status-hp'></p>
-                                    <p class = 'dm-text-lighten' id = 'p1-status-ap'></p>
-                                    <p class = 'dm-text-lighten' id = 'p1-status-crit-damage'></p>
+                        <div class="col-lg-6">
+                            <div class='p-4 rounded shadow-sm border mb-2'>
+                                <div class='row'>
+                                    <div class='col-md-6' id='p1-status-image'>
+                            
+                                    </div>
+                                    <div class='col-md-6'>
+                                        <p class='dm-text-lighten' id='p1-status-label'><strong>Player 1</strong></p>
+                                        <hr class='dm-bg-lighten' />
+                                        <p class='dm-text-lighten' id='p1-status-hp'></p>
+                                        <p class='dm-text-lighten' id='p1-status-ap'></p>
+                                        <p class='dm-text-lighten' id='p1-status-crit-damage'></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <!-- player 2 status -->
-                        <div class = 'p-4 rounded shadow-sm border mb-2'>
-                            <div class='row'>
-                                <div class='col-md-6' id = 'p2-status-image'>
-
-                                </div>
-                                <div class='col-md-6'>
-                                    <p class = 'dm-text-lighten' id='p2-status-label'><strong>Player 2</strong></p>
-                                    <hr class = 'dm-bg-lighten' />
-                                    <p class = 'dm-text-lighten' id='p2-status-hp'></p>
-                                    <p class = 'dm-text-lighten' id='p2-status-ap'></p>
-                                    <p class = 'dm-text-lighten' id='p2-status-crit-damage'></p>
+                        <div class="col-lg-6">
+                            <div class='p-4 rounded shadow-sm border mb-2'>
+                                <div class='row'>
+                                    <div class='col-md-6' id='p2-status-image'>
+                            
+                                    </div>
+                                    <div class='col-md-6'>
+                                        <p class='dm-text-lighten' id='p2-status-label'><strong>Player 2</strong></p>
+                                        <hr class='dm-bg-lighten' />
+                                        <p class='dm-text-lighten' id='p2-status-hp'></p>
+                                        <p class='dm-text-lighten' id='p2-status-ap'></p>
+                                        <p class='dm-text-lighten' id='p2-status-crit-damage'></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- col for play, game log, controls and option -->
-                <div class = 'col-lg-4 mb-4'>
+                <div class = 'col-lg-5 mb-4'>
                     <!-- play and game time -->
-                    <div class = 'animated dm-bg-darken dm-text-lighten fadeInRight p-4 border rounded shadow-sm mb-2'>
-                        <button type = 'button' id = 'start-game' class = 'animated fadeInRight btn btn-success'>
-                            <i class="far fa-play-circle"></i>
-                            Start
-                        </button>
+                    <div class = 'animated dm-bg-darken dm-text-lighten fadeInRight px-4 py-3 border rounded shadow-sm mb-2 text-center bg-success text-white h5' id = 'start-game'>
+                        <i class="far fa-play-circle"></i>
+                        Start
                     </div>
                     <!-- game log -->
                     <div class = 'animated dm-bg-darken dm-text-lighten fadeInRight p-4 border rounded shadow-sm mb-2'>
@@ -228,7 +230,7 @@
                         <hr class = 'dm-bg-lighten' />
                         <div class='row mb-2'>
                             <div class='col-md-6'>
-                                <span>Dead fields</span>
+                                <span>Walls</span>
                                 <br/>
                                 <span class = 'text-muted'>*Changes will apply on next game you start</span>
                             </div>
@@ -258,8 +260,7 @@
                 <a target="_blank" href="https://www.upwork.com/o/profiles/users/_~01770946482157855f/"
                     class="text-success">Luka Robajac</a>
                 <br />
-                <a class="cs-black-text dm-text-lighten" target="_blank" href="https://www.buymeacoffee.com/lyyka">Support the
-                    developer <span class="fas fa-coffee"></span></a>
+                <a class="cs-black-text dm-text-lighten" target="_blank" href="https://lyyka.github.io/portfolio">View the portfolio <span class="fas fa-coffee"></span></a>
             </p>
         </div>
 

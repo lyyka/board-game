@@ -89,19 +89,47 @@ class Board{
         this.movePlayer(this.getActivePlayer(), pos);
     }
 
+    // determines if the player can move to specifi field
+    canMove(player, x, y){
+        let isCrossingTheWall = () => {
+            let has_wall = false;
+            let is_on_y = (player.position.y == y && player.position.x != x);
+            let change = is_on_y ? x : y;
+            let constant = is_on_y ? y : x;
+            let compare_to = is_on_y ? player.position.x : player.position.y;
+            let direction = compare_to > change ? 1 : -1;
+
+            while(change != compare_to && !has_wall){
+                if(compare_to == player.position.y && constant == x){
+                    has_wall = this.fields[constant - 1][change - 1].dead;
+                }
+                else{
+                    has_wall = this.fields[change - 1][constant - 1].dead;
+                }
+
+                change += direction;
+            }
+
+            return has_wall;
+        };
+
+        let move_distance = Math.sqrt(Math.pow(player.position.x - x, 2) + Math.pow(player.position.y - y, 2));
+        const can_move = move_distance > 0 && move_distance <= player.maxMoveDistance // make sure player does not cross max move distance
+            && (x == player.position.x || y == player.position.y) // make sure player can only move in line, not diagonaly
+            && (x > 0 && x <= this.fieldsNumber) && (y > 0 && y <= this.fieldsNumber) // make sure the move is in the board
+            && !this.fields[x-1][y-1].dead // make sure the field is not a wall (dead)
+            && !isCrossingTheWall() // make sure player does not jump over walls
+
+        return can_move; 
+    }
+
     // moves player
     movePlayer(player, pos, forceMove = false){
         const x = pos.x;
         const y = pos.y;
-        // console.log(player);
-        // console.log('above should move to ' + x + ', ' + y);
-
-        // set player based on turn
-        let move_distance = 100;
 
         // calc players move distance
-        move_distance = Math.sqrt(Math.pow(player.position.x - x, 2) + Math.pow(player.position.y - y, 2));
-        if((move_distance > 0 && move_distance <= player.maxMoveDistance && (x == player.position.x || y == player.position.y) && (x > 0 && x <= this.fieldsNumber) && (y > 0 && y <= this.fieldsNumber) && !this.fields[x-1][y-1].dead) || forceMove) {
+        if (this.canMove(player, x, y) || forceMove) { // if force move is true, everything else does not matter (this happens after the fight, when players are reset to default position)
             // clear available fields for current player
             this.clearAvailableFields();
             // see if there is a fight
@@ -136,26 +164,12 @@ class Board{
 
     // gets the player currently on turn
     getActivePlayer(){
-        let player = undefined;
-        if (this.game.turn == 1) {
-            player = this.game.player1;
-        }
-        else if (this.game.turn == 2) {
-            player = this.game.player2;
-        }
-        return player;
+        return this.game.turn == 1 ? this.game.player1 : this.game.player2;
     }
 
     // gets player that is NOT active
     getSecondPlayer(){
-        let player = undefined;
-        if (this.game.turn == 1) {
-            player = this.game.player2;
-        }
-        else if (this.game.turn == 2) {
-            player = this.game.player1;
-        }
-        return player;
+        return this.game.turn == 1 ? this.game.player2 : this.game.player1;
     }
 
     // returns number of power ups currently on board
@@ -279,28 +293,24 @@ class Board{
         // mark up
         let drawn = 0;
         for(var i = y-1; i >= 0 && drawn < player.maxMoveDistance && !this.fields[x][i].dead; i--){
-            // console.log(x + ', ' + i);
             draw(x, i, this);
             drawn++;
         }
         // mark down
         drawn = 0;
         for(var i = y+1; i < this.fieldsNumber && drawn < player.maxMoveDistance && !this.fields[x][i].dead; i++){
-            // console.log(x + ', ' + i);
             draw(x, i, this);
             drawn++;
         }
         // mark left
         drawn = 0;
         for(var i = x-1; i >= 0 && drawn < player.maxMoveDistance && !this.fields[i][y].dead; i--){
-            // console.log(i + ', ' + y);
             draw(i, y, this);
             drawn++;
         }
         // mark right
         drawn = 0;
         for(var i = x+1; i < this.fieldsNumber && drawn < player.maxMoveDistance && !this.fields[i][y].dead; i++){
-            // console.log(i + ', ' + y);
             draw(i, y, this);
             drawn++;
         }

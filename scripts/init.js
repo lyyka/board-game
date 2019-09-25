@@ -102,12 +102,11 @@ function startGame(p1_image, p2_image){
 }
 
 function options(){
-    const options = {
+    return {
         fasterPowerups: $("#faster-powerups").prop('checked'),
         oneShotGame: $("#one-shot-game").prop('checked'),
         deadFields: $("#dead-fields").prop('checked'),
         maxPowerups: 10,
         maxDeadFields: 10
     };
-    return options;
 }
