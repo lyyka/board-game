@@ -14,6 +14,10 @@ he will take half of damage.
 End comes where one of the players loses all HP.
 
 ## Change log
+### 25-Sep-19, Part 2
+1. Fix: Dark mode improved significantly
+2. Some minor UI changes
+
 ### 25-Sep-19
 1. Fix: Player could jump over walls
 2. Change: Players status cards are in columns instead of being in separate rows

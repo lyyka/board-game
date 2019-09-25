@@ -25,7 +25,7 @@ class Logger{
 
     logMessage(message, color='black'){
         const node = document.createElement('span');
-        node.style.color = color;
+        node.style.color = this.logWrapper.parentElement.classList.contains("full-dark-bg") ? "white" : color;
         const text = document.createTextNode(message);
         node.appendChild(text);
 

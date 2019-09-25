@@ -9,8 +9,12 @@
     color: black;
 }
 /* background */
+.full-dark-bg{
+    background-color: #1e1e1e;
+}
 .cs-blue-bg{
-    background-color: #121420;
+    /*background-color: #121420;*/
+    background-color: #282828;
 }
 .cs-orange-bg{
     background-color: #B76D68;

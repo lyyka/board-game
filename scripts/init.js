@@ -71,6 +71,12 @@ function preStart(){
 }
 
 function startGame(p1_image, p2_image){
+    const canvas = $("<canvas></canvas>", {
+        class: 'dm-bg-darken-full ' + ($("#dark-mode").prop('checked') ? 'full-dark-bg' : 'bg-white'),
+        id: 'board'
+    });
+    $("#canvas-wrap").empty();
+    $("#canvas-wrap").append(canvas);
     // create new game, this will also create a board object inside game and draw it
     const game = new Game(options());
     current_game = game;
@@ -107,6 +113,6 @@ function options(){
         oneShotGame: $("#one-shot-game").prop('checked'),
         deadFields: $("#dead-fields").prop('checked'),
         maxPowerups: 10,
-        maxDeadFields: 10
+        maxDeadFields: 14
     };
 }

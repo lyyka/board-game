@@ -47,10 +47,10 @@
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header dm-bg-darken-full bg-white dm-text-lighten">
                         <h5 class="modal-title" id="exampleModalLongTitle">Choose characters</h5>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body dm-bg-darken-full bg-white dm-text-lighten">
                         <div id = 'p1-setup'>
                             <h5><strong>Player 1:</strong></h5>
                             <!-- player characters -->
@@ -77,7 +77,7 @@
                         </div>
                         <br/>
                         <br/>
-                        <button id = 'start-game-final' class = 'btn btn-danger w-100'>Fight!</button>
+                        <button id = 'start-game-final' class = 'btn btn-success w-100'>Fight!</button>
                     </div>
                 </div>
             </div>
@@ -88,25 +88,25 @@
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header dm-bg-darken-full bg-white dm-text-lighten">
                         <h5 class="modal-title" id="exampleModalLongTitle">Fight!</h5>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body dm-bg-darken-full bg-white dm-text-lighten">
                         <p class = 'p1-label'>Player 1, choose action:</p>
                         <input type = 'radio' name = 'p1-action' id = 'p1-attack' value = 'attack' checked />
-                        <label class = 'p1-label' for = 'p1-attack'>Attack</label>
+                        <label class = 'p1-label dm-text-lighten' for = 'p1-attack'>Attack</label>
                         <br />
                         <input type='radio' name = 'p1-action' id='p1-defend' value='defend' />
-                        <label class = 'p1-label' for='p1-defend'>Defend</label>
+                        <label class = 'p1-label dm-text-lighten' for='p1-defend'>Defend</label>
                         <hr />
                         <p class = 'p2-label'>Player 2, choose action:</p>
                         <input type='radio' name='p2-action' id='p2-attack' value='attack' checked />
-                        <label class = 'p2-label' for='p2-attack'>Attack</label>
+                        <label class = 'p2-label dm-text-lighten' for='p2-attack'>Attack</label>
                         <br />
                         <input type='radio' name='p2-action' id='p2-defend' value='defend' />
-                        <label class = 'p2-label' for='p2-defend'>Defend</label>
+                        <label class = 'p2-label dm-text-lighten' for='p2-defend'>Defend</label>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer dm-bg-darken-full bg-white dm-text-lighten">
                         <button type="button" id = 'init-fight' class="btn btn-primary">Continue</button>
                     </div>
                 </div>
@@ -118,13 +118,13 @@
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header dm-bg-darken-full bg-white dm-text-lighten">
                         <h5 class="modal-title" id="winModal-title">Fight!</h5>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body dm-bg-darken-full bg-white dm-text-lighten">
                         <p id = 'winModal-content'></p>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer dm-bg-darken-full bg-white dm-text-lighten">
                         <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -132,17 +132,22 @@
         </div>
 
         <div class = 'container-fluid'>
-            <h3 class = 'animated fadeInLeft dm-text-lighten'>Board game</h3>
             <div class = 'row'>
                 <!-- col for board and player statuses -->
                 <div class = 'col-lg-7 mb-4'>
-                    <canvas id='board'></canvas>
+                    <h1 class='animated fadeInLeft dm-text-lighten'>Board game</h1>
+                    <div id = "canvas-wrap">
+                        <div class="text-center mt-5">
+                            <img src="images/no_game_started.png" class='img-fluid' alt="No game has been started yet" />
+                        </div>
+                        <!-- <canvas class="bg-white dm-bg-darken-full" id='board'></canvas> -->
+                    </div>
                     <br/>
                     <h4 class = 'dm-text-lighten' id = 'turn-indicator'></h4>
                     <div id = 'player-status-wrapper' class = 'd-none row'>
                         <!-- player 1 status -->
                         <div class="col-lg-6">
-                            <div class='p-4 rounded shadow-sm border mb-2'>
+                            <div class='p-4 rounded shadow-sm border bg-white mb-2 dm-bg-darken-full'>
                                 <div class='row'>
                                     <div class='col-md-6' id='p1-status-image'>
                             
@@ -159,7 +164,7 @@
                         </div>
                         <!-- player 2 status -->
                         <div class="col-lg-6">
-                            <div class='p-4 rounded shadow-sm border mb-2'>
+                            <div class='p-4 rounded shadow-sm border bg-white mb-2 dm-bg-darken-full'>
                                 <div class='row'>
                                     <div class='col-md-6' id='p2-status-image'>
                             
@@ -179,18 +184,18 @@
                 <!-- col for play, game log, controls and option -->
                 <div class = 'col-lg-5 mb-4'>
                     <!-- play and game time -->
-                    <div class = 'animated dm-bg-darken dm-text-lighten fadeInRight px-4 py-3 border rounded shadow-sm mb-2 text-center bg-success text-white h5' id = 'start-game'>
+                    <div class = 'animated fadeInRight px-4 py-3 border rounded shadow-sm mb-4 text-center bg-success text-white h5' id = 'start-game'>
                         <i class="far fa-play-circle"></i>
                         Start
                     </div>
                     <!-- game log -->
-                    <div class = 'animated dm-bg-darken dm-text-lighten fadeInRight p-4 border rounded shadow-sm mb-2'>
+                    <div class = 'animated bg-white dm-bg-darken-full dm-text-lighten fadeInRight p-4 border rounded shadow-sm mb-4'>
                         <h4>Game log</h4>
                         <hr class = 'dm-bg-lighten' />
                         <div id = 'game-log'></div>
                     </div>
                     <!-- control -->
-                    <div class = 'animated dm-bg-darken dm-text-lighten fadeInRight p-4 border rounded shadow-sm mb-2'>
+                    <div class = 'animated bg-white dm-bg-darken-full dm-text-lighten fadeInRight p-4 border rounded shadow-sm mb-4'>
                         <h4>Controls</h4><hr class = 'dm-bg-lighten' />
                         <p>
                             <strong>WASD</strong> - move Player 1
@@ -205,43 +210,40 @@
                         </p>
                     </div>
                     <!-- options -->
-                    <div class = 'animated dm-bg-darken dm-text-lighten fadeInRight p-4 border rounded shadow-sm mb-2'>
+                    <div class = 'animated bg-white dm-bg-darken-full dm-text-lighten fadeInRight p-4 border rounded shadow-sm mb-4'>
                         <h4>Options</h4>
+                        <span class="cs-orange-text">*</span> Changes apply on next game
                         <hr class = 'dm-bg-lighten' />
-                        <div class = 'row mb-2'>
+                        <div class = 'row mb-4'>
                             <div class = 'col-md-6'>
-                                Faster appear power ups
-                                <br/>
-                                <span class = 'text-muted'>*Changes will apply on next game you start</span>
+                                Faster appear power ups <span class="cs-orange-text">*</span>
                             </div>
                             <div class='col-md-6 cb-col-resp'>
                                 <input type="checkbox" class="apple-switch" id = 'faster-powerups'>
                             </div>
                         </div>
-                        <hr class = 'dm-bg-lighten' />
-                        <div class='row mb-2'>
+                        <!-- <hr class = 'dm-bg-lighten' /> -->
+                        <div class='row mb-4'>
                             <div class='col-md-6'>
-                                <span>One-shot game</span>
+                                One-shot game <span class="cs-orange-text">*</span>
                             </div>
                             <div class='col-md-6 cb-col-resp'>
                                 <input type="checkbox" class="apple-switch" id = 'one-shot-game'>
                             </div>
                         </div>
-                        <hr class = 'dm-bg-lighten' />
-                        <div class='row mb-2'>
+                        <!-- <hr class = 'dm-bg-lighten' /> -->
+                        <div class='row mb-4'>
                             <div class='col-md-6'>
-                                <span>Walls</span>
-                                <br/>
-                                <span class = 'text-muted'>*Changes will apply on next game you start</span>
+                                Walls <span class="cs-orange-text">*</span>
                             </div>
                             <div class='col-md-6 cb-col-resp'>
                                 <input type="checkbox" class="apple-switch" checked id = 'dead-fields'>
                             </div>
                         </div>
-                        <hr class = 'dm-bg-lighten' />
-                        <div class='row mb-2'>
+                        <!-- <hr class = 'dm-bg-lighten' /> -->
+                        <div class='row mb-4'>
                             <div class='col-md-6'>
-                                <span>Dark mode</span>
+                                Dark mode
                             </div>
                             <div class='col-md-6 cb-col-resp'>
                                 <input type="checkbox" class="apple-switch" id = 'dark-mode'>
@@ -250,9 +252,9 @@
                     </div>
                 </div>
             </div>
-            <hr class = 'dm-bg-lighten' />
+            <!-- <hr class = 'dm-bg-lighten' /> -->
             <!-- footer -->
-            <p class = 'text-center'>
+            <p class = 'text-center mt-5'>
                 <span class="fas fa-code dm-text-lighten"></span>
                 <span class = 'dm-text-lighten'>with</span>
                 <span class="fas fa-heart" style="color:red;"></span>
@@ -260,7 +262,7 @@
                 <a target="_blank" href="https://www.upwork.com/o/profiles/users/_~01770946482157855f/"
                     class="text-success">Luka Robajac</a>
                 <br />
-                <a class="cs-black-text dm-text-lighten" target="_blank" href="https://lyyka.github.io/portfolio">View the portfolio <span class="fas fa-coffee"></span></a>
+                <a class="cs-black-text dm-text-lighten" target="_blank" href="https://lyyka.github.io/portfolio">View the portfolio</a>
             </p>
         </div>
 
